@@ -1,0 +1,47 @@
+{
+  "id": "10003",
+  "key": "TOOL-3",
+  "self": "https://jira.example.com/rest/api/2/issue/TOOL-3",
+  "fields": {
+    "summary": "Shopping cart for guests",
+    "issuetype": {
+      "name": "Story"
+    },
+    "status": {
+      "name": "Ready for QA"
+    },
+    "priority": {
+      "name": "High"
+    },
+    "labels": [
+      "heldout-fail"
+    ],
+    "description": "Guests (not signed in) can collect products in a cart before checkout. The web shop keeps the cart across page views; the cart API is also used by the mobile app.\n\n| ID | Criterion | Layer |\n| --- | --- | --- |\n| AC-1 | `POST /carts` creates an empty cart and responds 201 with its `id`. | API |\n| AC-2 | `POST /carts/{id}` with `product_id` and a `quantity` from 1 to 99 adds the product (200); adding a product already in the cart increases its quantity by the amount added. | API |\n| AC-3 | A quantity outside 1–99 is rejected with 422 and an error for the `quantity` field; the cart is unchanged. | API |\n| AC-4 | On a product page, choosing a quantity and pressing \"Add to cart\" shows \"Product added to shopping cart.\" and the cart icon in the navigation shows the total number of items. | UI |\n| AC-5 | The cart page (checkout step 1) lists each product with its quantity, unit price and line total (price × quantity), and the cart total. | UI |\n| AC-6 | `DELETE /carts/{id}/product/{productId}` removes the product (204); the cart no longer lists it. | API |\n| AC-7 | Deleting a cart responds 204 and is idempotent: deleting a cart that was already deleted also responds 204. | API |\n| AC-8 | Any request for a cart that does not exist responds 404 with the message \"Cart not found\". | API |\n\n**Test data:** any product that is in stock; carts are anonymous, so tests create and delete their own.",
+    "attachment": [
+      {
+        "id": "10134",
+        "filename": "heldout-verdict-TOOL-3-202611091211.md",
+        "mimeType": "text/markdown",
+        "size": 25335,
+        "content": "https://jira.example.com/secure/attachment/10134/heldout-verdict-TOOL-3-202611091211.md",
+        "created": "2026-11-09T12:11:26.869Z",
+        "author": {
+          "displayName": "Held-out Evaluator (bot)"
+        }
+      }
+    ],
+    "comment": {
+      "comments": [
+        {
+          "id": "20001",
+          "author": {
+            "displayName": "Held-out Evaluator (bot)"
+          },
+          "body": "h3. 🧪 Held-out evaluation: FAIL (recommendation)\n\n{panel:title=ERROR}\n2 application defect(s) reproduced by the evaluator: the AUT does not satisfy AC-7, AC-8. Awaiting reviewer confirmation.\n{panel}\n\n*AUT: *Practice Software Testing (http:​//localhost:4200/)\n\n*Tests: *18/22 passed, 4 failed, 0 flaky*  ·  Held-out integrity: *PRESERVED*  ·  Script defects self-repaired: *0\n\nh4. Coverage by test type\n\n||*Test type*||*Tests*||*Passed*||*Failed*||*Findings*||\n|idempotency|2|1|1|APP-1|\n|boundary|4|4|0|-|\n|composition|1|1|0|-|\n|negative|6|3|3|APP-2|\n|functional|9|9|0|-|\n\nh4. Findings for review (2)\n\n||*ID*||*Suggested severity*||*Criteria*||*Type*||*Finding*||*Expected (requirement)*||*Actual (AUT)*||\n|APP-1|Major|AC-7|idempotency|Deleting an already deleted cart answers 404 'Cart doesnt exists'|204|404|\n|APP-2|Minor|AC-8|negative|Requests for a missing cart answer 404 without the message 'Cart not found'|\"Cart not found\"|\"Cart doesnt exists\"|\n\n_Each finding in the attached report has reproduction steps (manual, curl and automated re-run), evidence and a reviewer-decision checkbox. No issues were raised automatically._\n\n* Full report attached: {{heldout-verdict-TOOL-3-202611091211.md}}\n* Final run: 03-eval\n\n_Posted automatically by the heldout-evaluator skill._",
+          "created": "2026-11-09T12:11:26.872Z"
+        }
+      ],
+      "total": 1
+    }
+  }
+}

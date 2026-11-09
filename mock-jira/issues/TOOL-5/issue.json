@@ -1,0 +1,47 @@
+{
+  "id": "10005",
+  "key": "TOOL-5",
+  "self": "https://jira.example.com/rest/api/2/issue/TOOL-5",
+  "fields": {
+    "summary": "Shop by brand",
+    "issuetype": {
+      "name": "Story"
+    },
+    "status": {
+      "name": "Ready for QA"
+    },
+    "priority": {
+      "name": "High"
+    },
+    "labels": [
+      "heldout-fail"
+    ],
+    "description": "hey team 👋 marketing wants people to be able to shop by brand. Rough notes below, ping me if anything is unclear.\n\nWhat we need:\n* the shop page has a \"By brand\" filter listing the brands; ticking one shows only that brand's products\n* the catalogue API supports the same: GET /products?by_brand=<brand id> → only products of that brand\n* GET /brands → all brands, each with its id, name and slug\n* GET /brands/{id} → that brand. Unknown id → 404\n* brand search for the mobile app: GET /brands/search?q=<text> finds brands whose name contains the text anywhere in the name, ignoring case (e.g. \"craft\" finds MightyCraft Hardware, \"FORGE\" finds ForgeFlex Tools)\n* no match → empty list, still 200\n\nnice to have (not this sprint): brand logos, brand landing pages\nDesign mockups: https://www.figma.com/file/k3Lx9Qe2/shop-by-brand (not final)\nFYI brand create/edit for admins is TOOL-12, don't test that here.",
+    "attachment": [
+      {
+        "id": "10476",
+        "filename": "heldout-verdict-TOOL-5-202611090331.md",
+        "mimeType": "text/markdown",
+        "size": 22025,
+        "content": "https://jira.example.com/secure/attachment/10476/heldout-verdict-TOOL-5-202611090331.md",
+        "created": "2026-11-09T03:31:41.248Z",
+        "author": {
+          "displayName": "Held-out Evaluator (bot)"
+        }
+      }
+    ],
+    "comment": {
+      "comments": [
+        {
+          "id": "20001",
+          "author": {
+            "displayName": "Held-out Evaluator (bot)"
+          },
+          "body": "h3. 🧪 Held-out evaluation: FAIL (recommendation)\n\n{panel:title=ERROR}\n1 application defect(s) reproduced by the evaluator: the AUT does not satisfy AC-5. Awaiting reviewer confirmation. 2 questions for the story's owner are listed under \"Requirement gaps, assumptions and open questions\"; no criterion waits on them.\n{panel}\n\n*AUT: *Practice Software Testing (http:​//localhost:4200/)\n\n*Tests: *12/15 passed, 3 failed, 0 flaky*  ·  Held-out integrity: *AMENDED (1 audited amendment(s))*  ·  Script defects self-repaired: *2\n\nh4. Coverage by test type\n\n||*Test type*||*Tests*||*Passed*||*Failed*||*Findings*||\n|contract|1|1|0|-|\n|composition|2|1|1|APP-1|\n|integration|1|1|0|-|\n|negative|1|1|0|-|\n|functional|10|8|2|APP-1|\n\nh4. Findings for review (1)\n\n||*ID*||*Suggested severity*||*Criteria*||*Type*||*Finding*||*Expected (requirement)*||*Actual (AUT)*||\n|APP-1|Major|AC-5|functional|Brand search matches only at the start of a brand name, not anywhere in it|\"MightyCraft Hardware\"|\\[\\]|\n\n_Each finding in the attached report has reproduction steps (manual, curl and automated re-run), evidence and a reviewer-decision checkbox. No issues were raised automatically._\n\n*Open questions (not tested): *G3 — the success status of GET /products?by_brand=<brand id>, GET /brands and GET /brands/\\{id\\}: no source states one (L25's \"still 200\" is said of the brand search). The tests check a success (2xx) only · G4 — which brands \"all brands\" (L22) and \"listing the brands\" (L20) means: no source lists the brands, and none says whether the filter must list the same brands GET /brands answers. Only MightyCraft Hardware and ForgeFlex Tools are named (L24). The tests check that brands are listed, and that GET /brands includes the two named ones\n\n* Full report attached: {{heldout-verdict-TOOL-5-202611090331.md}}\n* Final run: 04-rerun\n\n_Posted automatically by the heldout-evaluator skill._",
+          "created": "2026-11-09T03:31:41.251Z"
+        }
+      ],
+      "total": 1
+    }
+  }
+}

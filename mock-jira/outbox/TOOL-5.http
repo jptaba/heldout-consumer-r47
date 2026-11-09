@@ -1,0 +1,37 @@
+### add-attachment 2026-11-09T03:31:41.248Z (simulated — no Jira; this request was NOT sent)
+POST https://jira.example.com/rest/api/2/issue/TOOL-5/attachments
+Authorization: Bearer <JIRA_PAT>
+X-Atlassian-Token: no-check
+Content-Type: multipart/form-data; boundary=----heldout
+
+------heldout
+Content-Disposition: form-data; name="file"; filename="heldout-verdict-TOOL-5-202611090331.md"
+Content-Type: text/markdown
+
+<22025 bytes from output\practice-software-testing\TOOL-5\7-verdict\verdict.md>
+------heldout--
+
+### add-comment 2026-11-09T03:31:41.251Z (simulated — no Jira; this request was NOT sent)
+POST https://jira.example.com/rest/api/2/issue/TOOL-5/comment
+Authorization: Bearer <JIRA_PAT>
+Content-Type: application/json
+
+{
+  "body": "h3. 🧪 Held-out evaluation: FAIL (recommendation)\n\n{panel:title=ERROR}\n1 application defect(s) reproduced by the evaluator: the AUT does not satisfy AC-5. Awaiting reviewer confirmation. 2 questions for the story's owner are listed under \"Requirement gaps, assumptions and open questions\"; no criterion waits on them.\n{panel}\n\n*AUT: *Practice Software Testing (http:​//localhost:4200/)\n\n*Tests: *12/15 passed, 3 failed, 0 flaky*  ·  Held-out integrity: *AMENDED (1 audited amendment(s))*  ·  Script defects self-repaired: *2\n\nh4. Coverage by test type\n\n||*Test type*||*Tests*||*Passed*||*Failed*||*Findings*||\n|contract|1|1|0|-|\n|composition|2|1|1|APP-1|\n|integration|1|1|0|-|\n|negative|1|1|0|-|\n|functional|10|8|2|APP-1|\n\nh4. Findings for review (1)\n\n||*ID*||*Suggested severity*||*Criteria*||*Type*||*Finding*||*Expected (requirement)*||*Actual (AUT)*||\n|APP-1|Major|AC-5|functional|Brand search matches only at the start of a brand name, not anywhere in it|\"MightyCraft Hardware\"|\\[\\]|\n\n_Each finding in the attached report has reproduction steps (manual, curl and automated re-run), evidence and a reviewer-decision checkbox. No issues were raised automatically._\n\n*Open questions (not tested): *G3 — the success status of GET /products?by_brand=<brand id>, GET /brands and GET /brands/\\{id\\}: no source states one (L25's \"still 200\" is said of the brand search). The tests check a success (2xx) only · G4 — which brands \"all brands\" (L22) and \"listing the brands\" (L20) means: no source lists the brands, and none says whether the filter must list the same brands GET /brands answers. Only MightyCraft Hardware and ForgeFlex Tools are named (L24). The tests check that brands are listed, and that GET /brands includes the two named ones\n\n* Full report attached: {{heldout-verdict-TOOL-5-202611090331.md}}\n* Final run: 04-rerun\n\n_Posted automatically by the heldout-evaluator skill._"
+}
+
+### update-labels 2026-11-09T03:31:41.253Z (simulated — no Jira; this request was NOT sent)
+PUT https://jira.example.com/rest/api/2/issue/TOOL-5
+Authorization: Bearer <JIRA_PAT>
+Content-Type: application/json
+
+{
+  "update": {
+    "labels": [
+      {
+        "add": "heldout-fail"
+      }
+    ]
+  }
+}
+

@@ -1,0 +1,21 @@
+{
+  "chat.agentSkillsLocations": {
+    ".github/skills": true,
+    ".agents/skills": true,
+    ".claude/skills": false,
+    "~/.copilot/skills": true,
+    "~/.agents/skills": true,
+    "~/.claude/skills": true
+  },
+  "chat.agentFilesLocations": {
+    ".github/agents": true,
+    ".claude/agents": false,
+    "~/.copilot/agents": true
+  },
+  "chat.tools.terminal.autoApprove": {
+    "/^npm(\\.cmd)? run heldout\\b/": true
+  },
+  "chat.tools.edits.autoApprove": {
+    "**/.heldout/**": true
+  }
+}

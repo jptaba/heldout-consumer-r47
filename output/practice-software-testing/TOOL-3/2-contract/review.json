@@ -1,0 +1,149 @@
+{
+  "reviewer": "heldout-contract-reviewer (Claude Opus 5.5)",
+  "reviewedAt": "2026-11-09T03:35:54.780Z",
+  "contractHash": "467bbb777ced291a",
+  "items": [
+    {
+      "ref": "AC-1",
+      "verdict": "supported",
+      "evidence": "story.md#L21",
+      "note": "Quote and text match L21; outcomes 201, id in the response and an empty cart are all stated; layer api matches the table."
+    },
+    {
+      "ref": "AC-2",
+      "verdict": "supported",
+      "evidence": "story.md#L22",
+      "note": "Quote and text match L22; quantities 1 and 99 are the stated range's bounds; the increase-by-amount-added outcome is stated; layer api."
+    },
+    {
+      "ref": "AC-3",
+      "verdict": "supported",
+      "evidence": "story.md#L23, story.md#L22",
+      "note": "Quote and text match L23; 0 and 100 are the first values outside the 1-99 range; 422, the quantity-field error and the unchanged cart are all stated; layer api."
+    },
+    {
+      "ref": "AC-4",
+      "verdict": "supported",
+      "evidence": "story.md#L24",
+      "note": "Quote and text match L24; both outcomes (the message, the cart icon's total) are stated; layer ui matches the table. The undefined 'total number of items' is recorded as G7."
+    },
+    {
+      "ref": "AC-5",
+      "verdict": "supported",
+      "evidence": "story.md#L25",
+      "note": "Quote and text match L25; each listed outcome (products, quantity, unit price, line total = price x quantity, cart total) is stated; layer ui. The cart total's makeup is recorded as G8."
+    },
+    {
+      "ref": "AC-6",
+      "verdict": "supported",
+      "evidence": "story.md#L26",
+      "note": "Quote and text match L26; 204 and the product no longer listed are stated; layer api."
+    },
+    {
+      "ref": "AC-7",
+      "verdict": "supported",
+      "evidence": "story.md#L27",
+      "note": "Quote and text match L27; 204 on delete and 204 on a second delete are stated; layer api. The conflict with L28 is recorded as G6."
+    },
+    {
+      "ref": "AC-8",
+      "verdict": "supported",
+      "evidence": "story.md#L28, story.md#L27",
+      "note": "Quote and text match L28; 'any request' supports the add, remove, read and delete outcomes, all with 404 and \"Cart not found\"; the already-deleted case is deferred to G6 as L27 requires. The read outcome relies on a read call the story doesn't name (mechanics gap G1)."
+    },
+    {
+      "ref": "R1",
+      "verdict": "supported",
+      "evidence": "story.md#L17",
+      "note": "L17 states it word for word."
+    },
+    {
+      "ref": "R2",
+      "verdict": "supported",
+      "evidence": "story.md#L22, story.md#L23",
+      "note": "Range 1 to 99 from L22, rejection outside it from L23."
+    },
+    {
+      "ref": "E1",
+      "verdict": "supported",
+      "evidence": "story.md#L23",
+      "note": "422, the quantity-field error and the unchanged cart are stated at L23."
+    },
+    {
+      "ref": "E2",
+      "verdict": "supported",
+      "evidence": "story.md#L28",
+      "note": "404 and the message \"Cart not found\" are stated at L28."
+    },
+    {
+      "ref": "G6",
+      "verdict": "supported",
+      "evidence": "story.md#L27, story.md#L28",
+      "note": "The conflict is real: L27 says a second delete responds 204, L28 says any request for a cart that does not exist responds 404. No line resolves it. The gap records the conflict, says it follows L27 for that one case and why (L27 names the case and calls deletion idempotent); a reading the sources allow."
+    },
+    {
+      "ref": "G7",
+      "verdict": "supported",
+      "evidence": "story.md#L24",
+      "note": "L24 says 'the total number of items' without defining it; no other line does. The assumed sum of quantities is one reading the sources allow, recorded as an assumption."
+    },
+    {
+      "ref": "G8",
+      "verdict": "supported",
+      "evidence": "story.md#L25",
+      "note": "L25 names 'the cart total' without saying how it is made up; no line mentions other charges. The assumed sum of line totals is one allowed reading, recorded as an assumption."
+    },
+    {
+      "ref": "POST /carts",
+      "verdict": "supported",
+      "evidence": "story.md#L21",
+      "note": "Method and path at L21; 201 with id stated there."
+    },
+    {
+      "ref": "POST /carts/{id}",
+      "verdict": "supported",
+      "evidence": "story.md#L22",
+      "note": "Method, path, product_id, quantity and 200 at L22."
+    },
+    {
+      "ref": "DELETE /carts/{id}/product/{productId}",
+      "verdict": "supported",
+      "evidence": "story.md#L26",
+      "note": "Method, path and 204 at L26."
+    }
+  ],
+  "missed": [],
+  "observations": [
+    {
+      "field": "endpoints[].auth",
+      "note": "'none' on all three endpoints is an inference: L17 says guests (not signed in) can use a cart and L30 says carts are anonymous, but no line says the endpoints take no credentials or what they do with a signed-in user. Grounded enough as a reading, not stated."
+    },
+    {
+      "field": "acceptanceCriteria[AC-8].outcomes",
+      "note": "the 'reading a cart that does not exist' outcome rests on a read call no line names (L21-L28); it stands only once G1 is resolved from the application."
+    }
+  ],
+  "summary": "Every criterion, rule, error, oracle gap and endpoint is grounded in story.md L17-L30; the AC-7/AC-8 conflict is recorded with its reason as G6. No requirement-bearing line is missed; two observations on inferred auth and the unnamed read call.",
+  "itemHashes": {
+    "AC-1": "e7ea60df61c5",
+    "AC-2": "07275b5a8a57",
+    "AC-3": "78763c5d4d30",
+    "AC-4": "e07b003de38f",
+    "AC-5": "5f3f3a349d01",
+    "AC-6": "98b5b4df93d9",
+    "AC-7": "1856fca3a653",
+    "AC-8": "5010462effda",
+    "R1": "649db9781db5",
+    "R2": "e7734abd0045",
+    "E1": "78128ea0b3c2",
+    "E2": "8a1b92e581ae",
+    "G6": "05b5c5677465",
+    "G7": "294e55e11a69",
+    "G8": "a818f6ed1a8e",
+    "POST /carts": "cfd72870392f",
+    "POST /carts/{id}": "ab03ca09486a",
+    "DELETE /carts/{id}/product/{productId}": "b22404433640",
+    "auth": "74234e98afe7",
+    "coverage": "8dec346ddb51"
+  }
+}

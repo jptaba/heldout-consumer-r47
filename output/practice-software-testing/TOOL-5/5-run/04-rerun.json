@@ -1,0 +1,580 @@
+{
+ "key": "TOOL-5",
+ "run": "04-rerun",
+ "generatedAt": "2026-11-09T03:31:39.840Z",
+ "summary": {
+  "total": 15,
+  "passed": 12,
+  "failed": 3,
+  "flaky": 0,
+  "skipped": 0
+ },
+ "entries": [
+  {
+   "scenario": "SCN-001",
+   "title": "SCN-001: A visitor ticks a brand in the shop page's \"By brand\" filter and sees only that brand's products",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-1",
+    "@type:functional",
+    "@layer:ui",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-1"
+   ],
+   "testType": "functional",
+   "layer": "ui",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-002",
+   "title": "SCN-002: A client asks GET /products?by_brand for a brand and gets only that brand's products",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-2",
+    "@type:functional",
+    "@layer:api",
+    "@P1",
+    "@depends:SCN-003"
+   ],
+   "requirementRefs": [
+    "AC-2"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1,
+    "dependsOn": [
+     {
+      "scenario": "SCN-003",
+      "status": "passed"
+     }
+    ]
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-003",
+   "title": "SCN-003: A client asks GET /brands and gets the brands, the named ones among them",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-3",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-3"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-004",
+   "title": "SCN-004: A client asks GET /brands/{id} for an existing brand and gets that brand",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-4",
+    "@type:functional",
+    "@layer:api",
+    "@P1",
+    "@depends:SCN-003"
+   ],
+   "requirementRefs": [
+    "AC-4"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1,
+    "dependsOn": [
+     {
+      "scenario": "SCN-003",
+      "status": "passed"
+     }
+    ]
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-005.1",
+   "title": "SCN-005.1: A brand search for \"craft\" finds MightyCraft Hardware (the example: lower case, inside the name)",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "failed",
+   "tags": [
+    "@AC-5",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-5"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 2,
+    "trace": ".heldout/practice-software-testing/TOOL-5/5-run/04-rerun/artifacts/practice-software-testing--4d55f-lower-case-inside-the-name--chromium-retry1/trace.zip",
+    "errorContext": ".heldout/practice-software-testing/TOOL-5/5-run/04-rerun/artifacts/practice-software-testing--4d55f-lower-case-inside-the-name--chromium-retry1/error-context.md",
+    "apiCalls": 1,
+    "apiSequence": [
+     {
+      "request": {
+       "method": "GET",
+       "url": "http://localhost:8091/brands/search?q=craft",
+       "headers": {
+        "Accept": "application/json"
+       }
+      },
+      "response": {
+       "status": 200,
+       "durationMs": 188,
+       "headers": {
+        "server": "nginx",
+        "content-type": "application/json",
+        "transfer-encoding": "chunked",
+        "connection": "keep-alive",
+        "cache-control": "max-age=120, public",
+        "date": "Mon, 09 Nov 2026 03:31:37 GMT",
+        "etag": "\"39347ff402b6c53d831154110e30ac6a\"",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Content-Disposition"
+       },
+       "body": []
+      }
+     }
+    ],
+    "apiRelevantIndex": 0
+   },
+   "otherFailures": [],
+   "error": {
+    "headline": "[REQ AC-5] GET /brands/search?q=craft finds \"MightyCraft Hardware\"",
+    "reqTag": "AC-5",
+    "matcher": "toContain",
+    "expected": "\"MightyCraft Hardware\"",
+    "received": "[]",
+    "message": "Error: [REQ AC-5] GET /brands/search?q=craft finds \"MightyCraft Hardware\"\n\nexpect(received).toContain(expected) // indexOf\n\nExpected value: \"MightyCraft Hardware\"\nReceived array: []\n\n  117 |       await journey.step(`Then ${row.finds} is found`, async () => {\n  118 |         expectResponse(res, { status: '2xx' }, `[REQ AC-5] GET /brands/search?q=${row.q} answers`);\n> 119 |         expect((readBrands(res.body) ?? []).map(brandNameOf), `[REQ AC-5] GET /brands/search?q=${row.q} finds \"${row.finds}\"`).toContain(row.finds);\n      |                                                                                                                                ^\n  120 |       });\n  121 |       await journey.step(`Then every brand found has \"${row.q}\" in its name, ignoring case`, async () => {\n  122 |         const others = (readBrands(res.body) ?? []).map(brandNameOf).filter((n) => !contains(n, row.q));\n    at body (./output\\practice-software-testing\\TOOL-5\\4-hardening\\tool-5.spec.ts:119:128)\n    at ./heldout-support\\fixtures.ts:753:34\n    at ./output\\practice-software-testing\\TOOL-5\\4-hardening\\tool-5.spec.ts:117:7"
+   },
+   "failingStep": "Then MightyCraft Hardware is found",
+   "auto": {
+    "category": "APPLICATION_DEFECT",
+    "confidence": "high",
+    "signals": [
+     "Last API exchange: GET /brands/search → 200",
+     "Requirement assertion [REQ AC-5] failed.",
+     "Expected: \"MightyCraft Hardware\"",
+     "Received: []"
+    ],
+    "next": "Confirm live in the AUT (replay with api-probe.ts, observe the actual value), then record with --set."
+   }
+  },
+  {
+   "scenario": "SCN-005.2",
+   "title": "SCN-005.2: A brand search for \"FORGE\" finds ForgeFlex Tools (the example: upper case, at the start of the name)",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-5",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-5"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-005.3",
+   "title": "SCN-005.3: A brand search for \"hardware\" finds MightyCraft Hardware (at the end of the name)",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-5",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-5"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-005.4",
+   "title": "SCN-005.4: A brand search for \"fLeX\" finds ForgeFlex Tools (mixed case, inside a word)",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "failed",
+   "tags": [
+    "@AC-5",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-5"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 2,
+    "trace": ".heldout/practice-software-testing/TOOL-5/5-run/04-rerun/artifacts/practice-software-testing--9e540-s-mixed-case-inside-a-word--chromium-retry1/trace.zip",
+    "errorContext": ".heldout/practice-software-testing/TOOL-5/5-run/04-rerun/artifacts/practice-software-testing--9e540-s-mixed-case-inside-a-word--chromium-retry1/error-context.md",
+    "apiCalls": 1,
+    "apiSequence": [
+     {
+      "request": {
+       "method": "GET",
+       "url": "http://localhost:8091/brands/search?q=fLeX",
+       "headers": {
+        "Accept": "application/json"
+       }
+      },
+      "response": {
+       "status": 200,
+       "durationMs": 166,
+       "headers": {
+        "server": "nginx",
+        "content-type": "application/json",
+        "transfer-encoding": "chunked",
+        "connection": "keep-alive",
+        "cache-control": "max-age=120, public",
+        "date": "Mon, 09 Nov 2026 03:31:37 GMT",
+        "etag": "\"39347ff402b6c53d831154110e30ac6a\"",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Content-Disposition"
+       },
+       "body": []
+      }
+     }
+    ],
+    "apiRelevantIndex": 0
+   },
+   "otherFailures": [],
+   "error": {
+    "headline": "[REQ AC-5] GET /brands/search?q=fLeX finds \"ForgeFlex Tools\"",
+    "reqTag": "AC-5",
+    "matcher": "toContain",
+    "expected": "\"ForgeFlex Tools\"",
+    "received": "[]",
+    "message": "Error: [REQ AC-5] GET /brands/search?q=fLeX finds \"ForgeFlex Tools\"\n\nexpect(received).toContain(expected) // indexOf\n\nExpected value: \"ForgeFlex Tools\"\nReceived array: []\n\n  117 |       await journey.step(`Then ${row.finds} is found`, async () => {\n  118 |         expectResponse(res, { status: '2xx' }, `[REQ AC-5] GET /brands/search?q=${row.q} answers`);\n> 119 |         expect((readBrands(res.body) ?? []).map(brandNameOf), `[REQ AC-5] GET /brands/search?q=${row.q} finds \"${row.finds}\"`).toContain(row.finds);\n      |                                                                                                                                ^\n  120 |       });\n  121 |       await journey.step(`Then every brand found has \"${row.q}\" in its name, ignoring case`, async () => {\n  122 |         const others = (readBrands(res.body) ?? []).map(brandNameOf).filter((n) => !contains(n, row.q));\n    at body (./output\\practice-software-testing\\TOOL-5\\4-hardening\\tool-5.spec.ts:119:128)\n    at ./heldout-support\\fixtures.ts:753:34\n    at ./output\\practice-software-testing\\TOOL-5\\4-hardening\\tool-5.spec.ts:117:7"
+   },
+   "failingStep": "Then ForgeFlex Tools is found",
+   "auto": {
+    "category": "APPLICATION_DEFECT",
+    "confidence": "high",
+    "signals": [
+     "Last API exchange: GET /brands/search → 200",
+     "Requirement assertion [REQ AC-5] failed.",
+     "Expected: \"ForgeFlex Tools\"",
+     "Received: []"
+    ],
+    "next": "Confirm live in the AUT (replay with api-probe.ts, observe the actual value), then record with --set."
+   }
+  },
+  {
+   "scenario": "SCN-005.5",
+   "title": "SCN-005.5: A brand search for \"mightycraft hardware\" finds MightyCraft Hardware (the whole name, lower case)",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-5",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-5"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-006",
+   "title": "SCN-006: A brand search no brand name matches answers an empty list with 200",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-6",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-6"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-007",
+   "title": "SCN-007: The shop page's brand filter shows the same products GET /products?by_brand answers",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-1",
+    "@AC-2",
+    "@type:integration",
+    "@layer:ui",
+    "@P2",
+    "@depends:SCN-003"
+   ],
+   "requirementRefs": [
+    "AC-1",
+    "AC-2"
+   ],
+   "testType": "integration",
+   "layer": "ui",
+   "evidence": {
+    "attempts": 1,
+    "dependsOn": [
+     {
+      "scenario": "SCN-003",
+      "status": "passed"
+     }
+    ]
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-008",
+   "title": "SCN-008: Every brand GET /brands answers has its id, name and slug",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-3",
+    "@type:contract",
+    "@layer:api",
+    "@P2"
+   ],
+   "requirementRefs": [
+    "AC-3"
+   ],
+   "testType": "contract",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-009",
+   "title": "SCN-009: A client asks GET /brands/{id} for an unknown id and gets 404",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-4",
+    "@type:negative",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-4"
+   ],
+   "testType": "negative",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-010",
+   "title": "SCN-010: Every brand GET /brands answers is found by a brand search for its name in upper case",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-3",
+    "@AC-5",
+    "@type:composition",
+    "@layer:api",
+    "@P2"
+   ],
+   "requirementRefs": [
+    "AC-3",
+    "AC-5"
+   ],
+   "testType": "composition",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-011",
+   "title": "SCN-011: A brand found by search is the brand GET /brands/{id} answers, and GET /products?by_brand lists only its products",
+   "file": "practice-software-testing/TOOL-5/4-hardening/tool-5.spec.ts",
+   "status": "failed",
+   "tags": [
+    "@AC-5",
+    "@AC-4",
+    "@AC-2",
+    "@type:composition",
+    "@layer:api",
+    "@P2"
+   ],
+   "requirementRefs": [
+    "AC-5"
+   ],
+   "testType": "composition",
+   "layer": "api",
+   "evidence": {
+    "attempts": 2,
+    "trace": ".heldout/practice-software-testing/TOOL-5/5-run/04-rerun/artifacts/practice-software-testing--e4af3-and-lists-only-its-products-chromium-retry1/trace.zip",
+    "errorContext": ".heldout/practice-software-testing/TOOL-5/5-run/04-rerun/artifacts/practice-software-testing--e4af3-and-lists-only-its-products-chromium-retry1/error-context.md",
+    "apiCalls": 1,
+    "apiSequence": [
+     {
+      "request": {
+       "method": "GET",
+       "url": "http://localhost:8091/brands/search?q=craft",
+       "headers": {
+        "Accept": "application/json"
+       }
+      },
+      "response": {
+       "status": 200,
+       "durationMs": 27,
+       "headers": {
+        "server": "nginx",
+        "content-type": "application/json",
+        "transfer-encoding": "chunked",
+        "connection": "keep-alive",
+        "cache-control": "max-age=120, public",
+        "date": "Mon, 09 Nov 2026 03:31:39 GMT",
+        "etag": "\"39347ff402b6c53d831154110e30ac6a\"",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Content-Disposition"
+       },
+       "body": []
+      }
+     }
+    ],
+    "apiRelevantIndex": 0
+   },
+   "otherFailures": [],
+   "error": {
+    "headline": "[REQ AC-5] GET /brands/search?q=craft finds \"MightyCraft Hardware\"",
+    "reqTag": "AC-5",
+    "matcher": "toBeTruthy",
+    "received": "undefined",
+    "message": "Error: [REQ AC-5] GET /brands/search?q=craft finds \"MightyCraft Hardware\"\n\nexpect(received).toBeTruthy()\n\nReceived: undefined\n\n  220 |       const res = await api.get(EP.brandsSearch, { params: { q } });\n  221 |       const found = (readBrands(res.body) ?? []).find((b) => brandNameOf(b) === finds);\n> 222 |       expect(found, `[REQ AC-5] GET /brands/search?q=${q} finds \"${finds}\"`).toBeTruthy();\n      |                                                                              ^\n  223 |       id = brandIdOf(found!);\n  224 |     });\n  225 |     await journey.step(`Then GET /brands/<its id> answers ${finds}`, async () => {\n    at ./output\\practice-software-testing\\TOOL-5\\4-hardening\\tool-5.spec.ts:222:78\n    at ./heldout-support\\fixtures.ts:753:28\n    at ./output\\practice-software-testing\\TOOL-5\\4-hardening\\tool-5.spec.ts:219:5"
+   },
+   "failingStep": "When I search brands for \"craft\"",
+   "auto": {
+    "category": "APPLICATION_DEFECT",
+    "confidence": "high",
+    "signals": [
+     "Last API exchange: GET /brands/search → 200",
+     "Requirement assertion [REQ AC-5] failed.",
+     "Expected: ?",
+     "Received: undefined"
+    ],
+    "next": "Confirm live in the AUT (replay with api-probe.ts, observe the actual value), then record with --set."
+   }
+  }
+ ],
+ "meta": {
+  "label": "rerun",
+  "startedAt": "2026-11-09T03:31:33.839Z",
+  "finishedAt": "2026-11-09T03:31:39.801Z",
+  "autId": "practice-software-testing",
+  "aut": {
+   "name": "Practice Software Testing",
+   "baseURL": "http://localhost:4200/",
+   "apiBaseURL": "http://localhost:8091/"
+  },
+  "command": "npx playwright test output/practice-software-testing/TOOL-5/4-hardening/ --workers 4",
+  "workers": 4,
+  "repeatEach": null,
+  "grep": null,
+  "capture": false,
+  "preflight": {
+   "health": [
+    {
+     "url": "http://localhost:4200/",
+     "ok": true,
+     "status": 200,
+     "ms": 37,
+     "samples": [
+      37,
+      5,
+      2
+     ],
+     "slow": false
+    }
+   ]
+  },
+  "postflight": {
+   "health": [
+    {
+     "url": "http://localhost:4200/",
+     "ok": true,
+     "status": 200,
+     "ms": 6,
+     "samples": [
+      6,
+      6,
+      3
+     ],
+     "slow": false
+    }
+   ]
+  },
+  "skill": "d08abbbfba3c5da6",
+  "exitCode": 1,
+  "stats": {
+   "startTime": "2026-11-09T03:31:34.382Z",
+   "duration": 5347.492,
+   "expected": 12,
+   "skipped": 0,
+   "unexpected": 3,
+   "flaky": 0
+  },
+  "raw": ".heldout/practice-software-testing/TOOL-5/5-run/04-rerun"
+ },
+ "seed": {
+  "created": 0,
+  "cleaned": 0,
+  "alreadyGone": 0,
+  "kept": 0,
+  "keptBy": {},
+  "leftovers": [],
+  "accounts": {
+   "used": 0,
+   "reset": 0,
+   "notReset": []
+  }
+ }
+}

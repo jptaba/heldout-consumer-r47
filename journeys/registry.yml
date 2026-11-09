@@ -1,0 +1,472 @@
+# Journey registry: every journey in fixtures/<domain>.ts, what it touches, what it calls, what must run before it
+# (requires) and which stories proved it. Written by `npm run heldout -- journeys --sync` and the harvest; don't edit.
+# A merge conflict in this file: npm run heldout -- journeys --resolve
+schema: 1
+app: "Practice Software Testing"
+journeys:
+  api.brands.all-brand-names:
+    fixture: "fixtures/brands.ts#allBrandNames"
+    kind: api
+    summary: "The names of every brand GET /brands lists (a lookup, no cleanup)."
+    params: "api: Api, seed: Seed"
+    endpoints: ["GET /brands"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-006 passed"
+      hash: "97ee80e09c8e"
+  api.brands.brand-id-of:
+    fixture: "fixtures/brands.ts#brandIdOf"
+    kind: api
+    summary: "The id of a brand record of the API's answers, as text."
+    params: "brand: Brand"
+    requires: ["api.brands.find-brand"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-002, SCN-004, SCN-007 passed"
+      hash: "ea0b7dfcb0e6"
+  api.brands.brand-name-of:
+    fixture: "fixtures/brands.ts#brandNameOf"
+    kind: api
+    summary: "The name of a brand record of the API's answers, as text."
+    params: "brand: Brand"
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-002, SCN-004, SCN-007, SCN-008 passed"
+      hash: "984f3190c399"
+  api.brands.find-brand:
+    fixture: "fixtures/brands.ts#findBrand"
+    kind: api
+    summary: "Look up an existing brand by its name in GET /brands; returns its id and name (a lookup, no cleanup)."
+    params: "api: Api, seed: Seed, name: string"
+    endpoints: ["GET /brands"]
+    calls: ["api.brands.brand-id-of", "api.brands.brand-name-of"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-002, SCN-004, SCN-007 passed"
+      hash: "4f86845bd52e"
+  api.brands.read-brands:
+    fixture: "fixtures/brands.ts#readBrands"
+    kind: api
+    summary: "Read the brands of a GET /brands or GET /brands/search answer as a list; undefined when the answer holds no list."
+    params: "body: unknown"
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-003, SCN-005, SCN-006, SCN-008, SCN-010 passed"
+      hash: "daa1f516b140"
+  api.brands.unknown-brand-id:
+    fixture: "fixtures/brands.ts#unknownBrandId"
+    kind: api
+    summary: "An id in the form of the application's brand ids that no brand has: checked against GET /brands, since the tests can't create and delete a brand (brand admin is another story)."
+    params: "api: Api, seed: Seed"
+    endpoints: ["GET /brands"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-009 passed"
+      hash: "0be0890bf702"
+  api.carts.add-to-cart:
+    fixture: "fixtures/carts.ts#addToCart"
+    kind: api
+    summary: "Add a product to a cart through the API as a precondition."
+    params: "api: Api, seed: Seed, cartId: string, productId: string, quantity: number"
+    endpoints: ["POST /carts/{}"]
+    requires: ["api.carts.create-cart", "api.products.products-in-stock"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-006, SCN-012 passed"
+      hash: "354837131073"
+  api.carts.cart-lines:
+    fixture: "fixtures/carts.ts#cartLines"
+    kind: api
+    summary: "The lines of a read cart's answer: each product it holds and its quantity (an empty list when it holds none)."
+    params: "body: unknown"
+    requires: ["api.products.products-in-stock", "api.carts.remove-cart", "api.carts.send-read-cart"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-001, SCN-002, SCN-006, SCN-009, SCN-010, SCN-012, SCN-017 passed"
+      hash: "26244070a003"
+  api.carts.create-cart:
+    fixture: "fixtures/carts.ts#createCart"
+    kind: api
+    summary: "Create an empty cart through the API; deleted after the test."
+    params: "api: Api, seed: Seed"
+    endpoints: ["POST /carts"]
+    calls: ["api.carts.remove-cart"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-002, SCN-003, SCN-006, SCN-007, SCN-008, SCN-009, SCN-010, SCN-011, SCN-012 passed"
+      hash: "1883c1429dfc"
+  api.carts.deleted-cart-id:
+    fixture: "fixtures/carts.ts#deletedCartId"
+    kind: api
+    summary: "The id of a cart that was created and then deleted, so no cart has it any more."
+    params: "api: Api, seed: Seed"
+    endpoints: ["POST /carts"]
+    calls: ["api.carts.send-delete-cart"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-008 passed"
+      hash: "60bebedcdd72"
+  api.carts.error-message-of:
+    fixture: "fixtures/carts.ts#errorMessageOf"
+    kind: api
+    summary: "The message of an error answer ({ message } or a bare text); undefined when it has none."
+    params: "body: unknown"
+    requires: ["api.products.products-in-stock"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-008, SCN-017 passed"
+      hash: "b6a50c10e136"
+  api.carts.field-error-of:
+    fixture: "fixtures/carts.ts#fieldErrorOf"
+    kind: api
+    summary: "The error a validation answer gives for one field (joined when it lists several); undefined when it names none."
+    params: "body: unknown, field: string"
+    requires: ["api.carts.create-cart", "api.products.products-in-stock"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-011 passed"
+      hash: "50945aac8880"
+  api.carts.read-cart-lines:
+    fixture: "fixtures/carts.ts#readCartLines"
+    kind: api
+    summary: "Read a cart's lines through the API as a precondition or a check of the test's own data."
+    params: "api: Api, seed: Seed, cartId: string"
+    calls: ["api.carts.cart-lines", "api.carts.send-read-cart"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-001, SCN-002, SCN-006, SCN-009, SCN-010, SCN-012 passed"
+      hash: "392368b6ac1f"
+  api.carts.remove-cart:
+    fixture: "fixtures/carts.ts#removeCart"
+    kind: api
+    summary: "Remove a cart after a test; an answer that says it is already gone counts as removed."
+    params: "api: Api, cartId: string"
+    calls: ["api.carts.send-delete-cart"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-001, SCN-002, SCN-003, SCN-004, SCN-005, SCN-006, SCN-007, SCN-008, SCN-009, SCN-010, SCN-011, SCN-012, SCN-013, SCN-014, SCN-015, SCN-017 passed"
+      hash: "0599d9944ee6"
+  api.carts.send-delete-cart:
+    fixture: "fixtures/carts.ts#sendDeleteCart"
+    kind: api
+    summary: "Send the request that deletes a cart and return its raw answer."
+    params: "api: Api, cartId: string"
+    endpoints: ["DELETE /carts/{}"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-001, SCN-002, SCN-003, SCN-004, SCN-005, SCN-006, SCN-007, SCN-008, SCN-009, SCN-010, SCN-011, SCN-012, SCN-013, SCN-014, SCN-015, SCN-017 passed"
+      hash: "2c7c8ff77ec0"
+  api.carts.send-read-cart:
+    fixture: "fixtures/carts.ts#sendReadCart"
+    kind: api
+    summary: "Send the request that reads a cart and return its raw answer."
+    params: "api: Api, cartId: string"
+    endpoints: ["GET /carts/{}"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-001, SCN-002, SCN-006, SCN-007, SCN-008, SCN-009, SCN-010, SCN-012, SCN-017 passed"
+      hash: "76a64e495b2a"
+  api.carts.unknown-cart-id:
+    fixture: "fixtures/carts.ts#unknownCartId"
+    kind: api
+    summary: "An id in the format of the application's cart ids that no cart was ever given: made from a fresh cart's id (removed after the test) by changing every letter and digit, and checked to read as no cart."
+    params: "api: Api, seed: Seed"
+    calls: ["api.carts.create-cart", "api.carts.send-read-cart"]
+    requires: ["api.carts.deleted-cart-id"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-008 passed"
+      hash: "db142c30df42"
+  api.products.last-page-of:
+    fixture: "fixtures/products.ts#lastPageOf"
+    kind: api
+    summary: "The last page number of a paginated GET /products answer (1 when the answer is not paginated)."
+    params: "body: unknown"
+    requires: ["api.products.read-products"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-007 passed"
+      hash: "1972ce5d08ea"
+  api.products.product-brand-id:
+    fixture: "fixtures/products.ts#productBrandId"
+    kind: api
+    summary: "The id of the brand a product record of the API's answers belongs to, as text."
+    params: "product: Product"
+    requires: ["api.products.read-products"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-002 passed"
+      hash: "1b38bd9d8069"
+  api.products.product-brand-name:
+    fixture: "fixtures/products.ts#productBrandName"
+    kind: api
+    summary: "The name of the brand a product record of the API's answers belongs to."
+    params: "product: Product"
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-001 passed"
+      hash: "0d6c27115988"
+  api.products.product-name-of:
+    fixture: "fixtures/products.ts#productNameOf"
+    kind: api
+    summary: "The name of a product record of the API's answers."
+    params: "product: Product"
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-002, SCN-003, SCN-004, SCN-005, SCN-006, SCN-008, SCN-009, SCN-010, SCN-011, SCN-012, SCN-013, SCN-014, SCN-015, SCN-017 passed"
+      hash: "a5145f501897"
+  api.products.products-in-stock:
+    fixture: "fixtures/products.ts#productsInStock"
+    kind: api
+    summary: "Products of the catalogue that are in stock, as their ids and names (a lookup of GET /products, made once per worker; no cleanup)."
+    params: "api: Api, seed: Seed, count = 1"
+    endpoints: ["GET /products"]
+    calls: ["api.products.product-name-of", "api.products.read-products"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-002, SCN-003, SCN-004, SCN-005, SCN-006, SCN-008, SCN-009, SCN-010, SCN-011, SCN-012, SCN-013, SCN-014, SCN-015, SCN-017 passed"
+      hash: "805b6a8114ef"
+  api.products.read-products:
+    fixture: "fixtures/products.ts#readProducts"
+    kind: api
+    summary: "The products of a GET /products answer as a list; undefined when the answer holds no list."
+    params: "body: unknown"
+    requires: ["api.brands.find-brand"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3", "TOOL-5"]
+      evidence: "03-eval: SCN-002, SCN-003, SCN-004, SCN-005, SCN-006, SCN-008, SCN-009, SCN-010, SCN-011, SCN-012, SCN-013, SCN-014, SCN-015, SCN-017 passed"
+      hash: "cf0b5f4b4664"
+  ui.carts.add-to-cart-on-page:
+    fixture: "fixtures/carts.ts#addToCartOnPage"
+    kind: ui
+    summary: "On an open product page, choose a quantity and press \"Add to cart\"."
+    params: "page: Page, quantity: number"
+    locators: ["getByTestId('quantity')", "getByTestId('add-to-cart')"]
+    requires: ["ui.products.open-product"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-004, SCN-005, SCN-013, SCN-014, SCN-015 passed"
+      hash: "8e061aef9119"
+  ui.carts.cart-icon-count:
+    fixture: "fixtures/carts.ts#cartIconCount"
+    kind: ui
+    summary: "The cart icon's count in the navigation."
+    params: "page: Page"
+    locators: ["getByTestId('cart-quantity')"]
+    requires: ["ui.carts.fill-web-shop-cart", "ui.carts.add-to-cart-on-page"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-013 passed"
+      hash: "9d306a371d1a"
+  ui.carts.cart-page-rows:
+    fixture: "fixtures/carts.ts#cartPageRows"
+    kind: ui
+    summary: "The product rows the cart page shows: each one's name, quantity, unit price and line total."
+    params: "page: Page"
+    locators: ["getByTestId('product-title')", "getByTestId('product-quantity')", "getByTestId('product-price')", "getByTestId('line-price')", "locator('table tbody tr')"]
+    requires: ["ui.carts.open-cart-page"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-005, SCN-014, SCN-015 passed"
+      hash: "ba55250471df"
+  ui.carts.cart-total:
+    fixture: "fixtures/carts.ts#cartTotal"
+    kind: ui
+    summary: "The cart page's cart total."
+    params: "page: Page"
+    locators: ["getByTestId('cart-total')"]
+    requires: ["ui.carts.cart-page-rows"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-005, SCN-015 passed"
+      hash: "c1d1ba7a3756"
+  ui.carts.cart-total-value:
+    fixture: "fixtures/carts.ts#cartTotalValue"
+    kind: ui
+    summary: "The cart page's cart total read as a number (NaN when it shows none)."
+    params: "page: Page"
+    calls: ["ui.carts.cart-total"]
+    requires: ["ui.carts.cart-page-rows"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-005, SCN-015 passed"
+      hash: "521c88ad9e3c"
+  ui.carts.fill-web-shop-cart:
+    fixture: "fixtures/carts.ts#fillWebShopCart"
+    kind: ui
+    summary: "Put products into the web shop's cart the way a visitor does: open each product's page and add the quantity given."
+    params: "page: Page, api: Api, seed: Seed, items: { id: string; quantity: number }[]"
+    calls: ["api.carts.remove-cart", "ui.carts.add-to-cart-on-page", "ui.products.open-product"]
+    requires: ["api.products.products-in-stock"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-005, SCN-013, SCN-014, SCN-015 passed"
+      hash: "2d42a65408d7"
+  ui.carts.open-cart-page:
+    fixture: "fixtures/carts.ts#openCartPage"
+    kind: ui
+    summary: "Open the cart page (checkout step 1) and wait until it lists its products."
+    params: "page: Page"
+    routes: ["/checkout"]
+    locators: ["locator('table tbody tr')"]
+    requires: ["ui.carts.fill-web-shop-cart"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-005, SCN-014, SCN-015 passed"
+      hash: "dbef507595d6"
+  ui.products.brands-of-shown-products:
+    fixture: "fixtures/products.ts#brandsOfShownProducts"
+    kind: ui
+    summary: "The brand name of each product the shop page's current list page shows, read from each product's record (GET /products/{id}, a lookup) since a card may not show its brand."
+    params: "page: Page, api: Api"
+    endpoints: ["GET /products/{}"]
+    locators: ["locator('[data-test^=\"product-\"]')", "getByTestId('product-name')"]
+    calls: ["api.products.product-brand-name"]
+    requires: ["ui.products.filter-options", "ui.products.tick-filter"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-001 passed"
+      hash: "3e94b1ff43d6"
+  ui.products.filter-options:
+    fixture: "fixtures/products.ts#filterOptions"
+    kind: ui
+    summary: "The labels of the checkboxes of the shop page's filter under the given heading."
+    params: "page: Page, heading: string"
+    locators: ["getByRole('heading', { name })"]
+    requires: ["ui.products.open-shop"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-001 passed"
+      hash: "07b489eed445"
+  ui.products.open-product:
+    fixture: "fixtures/products.ts#openProduct"
+    kind: ui
+    summary: "Open a product's page in the web shop and wait until it shows the product."
+    params: "page: Page, id: string"
+    routes: ["/product/{}"]
+    locators: ["getByTestId('product-name')"]
+    requires: ["api.products.products-in-stock"]
+    status: proven
+    proven:
+      at: "2026-11-09T12:11:27.223Z"
+      by: ["TOOL-3"]
+      evidence: "03-eval: SCN-004, SCN-005, SCN-013, SCN-014, SCN-015 passed"
+      hash: "1e68eac28785"
+  ui.products.open-shop:
+    fixture: "fixtures/products.ts#openShop"
+    kind: ui
+    summary: "Open the shop page and wait until it lists products."
+    params: "page: Page"
+    routes: ["/"]
+    locators: ["locator('[data-test^=\"product-\"]')", "getByTestId('product-name')"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-001, SCN-007 passed"
+      hash: "0e1b3f26d4d5"
+  ui.products.shown-product-names:
+    fixture: "fixtures/products.ts#shownProductNames"
+    kind: ui
+    summary: "The names of the products the shop page's current list page shows."
+    params: "page: Page"
+    locators: ["locator('[data-test^=\"product-\"]')", "getByTestId('product-name')"]
+    requires: ["api.products.last-page-of", "ui.products.tick-filter"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-007 passed"
+      hash: "5d7fececba54"
+  ui.products.shown-product-names-all-pages:
+    fixture: "fixtures/products.ts#shownProductNamesAllPages"
+    kind: ui
+    summary: "The names of the products the shop page shows over all its list pages, going through its pagination."
+    params: "page: Page"
+    locators: ["getByRole('button', { name: 'Next', exact: true })", "locator('xpath=..')", "locator('[data-test^=\"product-\"]')", "getByTestId('product-name')"]
+    calls: ["api.products.read-products", "ui.products.shown-product-names"]
+    requires: ["ui.products.shown-product-names"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-007 passed"
+      hash: "bf9ee3bd607d"
+  ui.products.tick-filter:
+    fixture: "fixtures/products.ts#tickFilter"
+    kind: ui
+    summary: "Tick one option of the shop page's filter under the given heading, and wait until the product list shows its products."
+    params: "page: Page, heading: string, option: string"
+    locators: ["getByRole('heading', { name })", "locator('[data-test^=\"product-\"]')", "getByTestId('product-name')"]
+    calls: ["api.products.read-products"]
+    requires: ["ui.products.open-shop"]
+    status: proven
+    proven:
+      at: "2026-11-09T03:31:41.575Z"
+      by: ["TOOL-5"]
+      evidence: "04-rerun: SCN-001, SCN-007 passed"
+      hash: "3d84481c8574"

@@ -1,0 +1,41 @@
+{
+  "03-eval": {
+    "SCN-008.2": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Minor",
+      "title": "Requests for a missing cart answer 404 without the message 'Cart not found'",
+      "rationale": "AC-8 requires every request for a cart that does not exist to answer 404 with the message 'Cart not found'. Replayed live: the status is 404 everywhere, and adding a product to a deleted cart (the control, SCN-008.1's call) says 'Cart not found' as required, so the test's mechanics and message reading are right. Removing a product from a deleted cart and deleting a never-created cart answer {message: 'Cart doesnt exists'}; reading a deleted or never-created cart answers {message: 'Requested item not found'}. The requirement's wording is not met on three of the four endpoints; status and content are correct, so Minor (wording).",
+      "evidence": "P7: chain on 2026-11-09 (api-probe, visitor): step 3 POST /carts/{deleted} -> 404 'Cart not found' (control); step 4 DELETE /carts/{deleted}/product/{id} -> 404 'Cart doesnt exists'; steps 5 and 8 GET /carts/{deleted|never created} -> 404 'Requested item not found'; step 7 DELETE /carts/{never created} -> 404 'Cart doesnt exists'",
+      "confirmedAt": "2026-11-09T12:10:49.904Z",
+      "failure": "[REQ AC-8] a request for a cart that does not exist says \"Cart not found\""
+    },
+    "SCN-008.3": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Minor",
+      "title": "Requests for a missing cart answer 404 without the message 'Cart not found'",
+      "rationale": "AC-8 requires every request for a cart that does not exist to answer 404 with the message 'Cart not found'. Replayed live: the status is 404 everywhere, and adding a product to a deleted cart (the control, SCN-008.1's call) says 'Cart not found' as required, so the test's mechanics and message reading are right. Removing a product from a deleted cart and deleting a never-created cart answer {message: 'Cart doesnt exists'}; reading a deleted or never-created cart answers {message: 'Requested item not found'}. The requirement's wording is not met on three of the four endpoints; status and content are correct, so Minor (wording).",
+      "evidence": "P7: chain on 2026-11-09 (api-probe, visitor): step 3 POST /carts/{deleted} -> 404 'Cart not found' (control); step 4 DELETE /carts/{deleted}/product/{id} -> 404 'Cart doesnt exists'; steps 5 and 8 GET /carts/{deleted|never created} -> 404 'Requested item not found'; step 7 DELETE /carts/{never created} -> 404 'Cart doesnt exists'",
+      "confirmedAt": "2026-11-09T12:10:49.904Z",
+      "failure": "[REQ AC-8] a request for a cart that does not exist says \"Cart not found\""
+    },
+    "SCN-008.4": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Minor",
+      "title": "Requests for a missing cart answer 404 without the message 'Cart not found'",
+      "rationale": "AC-8 requires every request for a cart that does not exist to answer 404 with the message 'Cart not found'. Replayed live: the status is 404 everywhere, and adding a product to a deleted cart (the control, SCN-008.1's call) says 'Cart not found' as required, so the test's mechanics and message reading are right. Removing a product from a deleted cart and deleting a never-created cart answer {message: 'Cart doesnt exists'}; reading a deleted or never-created cart answers {message: 'Requested item not found'}. The requirement's wording is not met on three of the four endpoints; status and content are correct, so Minor (wording).",
+      "evidence": "P7: chain on 2026-11-09 (api-probe, visitor): step 3 POST /carts/{deleted} -> 404 'Cart not found' (control); step 4 DELETE /carts/{deleted}/product/{id} -> 404 'Cart doesnt exists'; steps 5 and 8 GET /carts/{deleted|never created} -> 404 'Requested item not found'; step 7 DELETE /carts/{never created} -> 404 'Cart doesnt exists'",
+      "confirmedAt": "2026-11-09T12:10:49.904Z",
+      "failure": "[REQ AC-8] a request for a cart that does not exist says \"Cart not found\""
+    },
+    "SCN-016": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Major",
+      "title": "Deleting an already deleted cart answers 404 'Cart doesnt exists'",
+      "rationale": "AC-7 requires a repeat delete of a deleted cart to answer 204 (idempotent); AC-8 requires any request for a missing cart to answer 404 'Cart not found'; G6 (assumed AC-7 wins) is open. Replayed live: the first DELETE answered 204, the second DELETE of the same cart answered 404 {message: 'Cart doesnt exists'}. That is wrong under either reading of G6: under AC-7 the status should be 204, under AC-8 the message should be 'Cart not found'. Hence --any-reading. Major: the idempotency the requirement names is not met (a client can treat the 404 as done).",
+      "evidence": "P7: chain on 2026-11-09 (api-probe, visitor): step 2 DELETE /carts/{id} -> 204; step 6 DELETE /carts/{id} again -> 404 {message: 'Cart doesnt exists'}",
+      "confirmedAt": "2026-11-09T12:10:57.417Z",
+      "failure": "[REQ AC-7] deleting a cart that was already deleted (expects status 204)",
+      "anyReading": true
+    }
+  }
+}

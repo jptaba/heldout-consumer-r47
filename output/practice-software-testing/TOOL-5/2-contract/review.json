@@ -1,0 +1,117 @@
+{
+  "reviewer": "heldout-contract-reviewer (Claude Opus 5.5)",
+  "reviewedAt": "2026-11-09T03:07:20.110Z",
+  "contractHash": "25449a3e755252f9",
+  "items": [
+    {
+      "ref": "AC-1",
+      "verdict": "supported",
+      "evidence": "story.md#L20",
+      "note": "Quote is L20 verbatim; text adds no condition; both outcomes (filter named \"By brand\" listing brands; after ticking one, only that brand's products shown) follow from L20. A shop-page filter is a UI criterion: layer ui is right."
+    },
+    {
+      "ref": "AC-2",
+      "verdict": "supported",
+      "evidence": "story.md#L21",
+      "note": "Quote is L21 verbatim; the outcome restates \"only products of that brand\" for GET /products?by_brand=<brand id>. Layer api matches \"the catalogue API\"."
+    },
+    {
+      "ref": "AC-3",
+      "verdict": "supported",
+      "evidence": "story.md#L22",
+      "note": "Quote is L22 verbatim; outcomes \"all brands\" and \"each with its id, name and slug\" are both stated. Layer api."
+    },
+    {
+      "ref": "AC-4",
+      "verdict": "supported",
+      "evidence": "story.md#L23",
+      "note": "Quote is L23 verbatim; both sentences (existing id answers that brand; unknown id 404) are captured as outcomes. Layer api."
+    },
+    {
+      "ref": "AC-5",
+      "verdict": "supported",
+      "evidence": "story.md#L24",
+      "note": "Quote is L24 verbatim, including both conditions (contains anywhere in the name; ignoring case) and both examples (\"craft\" finds MightyCraft Hardware, \"FORGE\" finds ForgeFlex Tools), each an outcome. \"for the mobile app\" names the consumer of the API and does not change the layer: api is right."
+    },
+    {
+      "ref": "AC-6",
+      "verdict": "supported",
+      "evidence": "story.md#L24-L25",
+      "note": "Quote is L25 verbatim; outcomes empty list and status still 200 are both stated. L25 names no endpoint; attaching it to the brand search (L24, directly above) is recorded as the assumption G5, so it is not an unrecorded reading."
+    },
+    {
+      "ref": "E1",
+      "verdict": "supported",
+      "evidence": "story.md#L23",
+      "note": "\"Unknown id → 404\" for GET /brands/{id}: same case and status."
+    },
+    {
+      "ref": "G3",
+      "verdict": "supported",
+      "evidence": "story.md#L21-L25",
+      "note": "L21-L23 state only the content of the answers; the only status besides L23's 404 is L25's \"still 200\", said of the no-match case. The success status of the three endpoints is really missing; left open."
+    },
+    {
+      "ref": "G4",
+      "verdict": "supported",
+      "evidence": "story.md#L20, story.md#L22, story.md#L24",
+      "note": "L20 and L22 name no brand and no count, and no line ties the filter's list to GET /brands' answer; L24 names only two brands, as search examples. Really missing; left open."
+    },
+    {
+      "ref": "G5",
+      "verdict": "supported",
+      "evidence": "story.md#L21, story.md#L24-L25",
+      "note": "L25 names no endpoint and sits under the search bullet L24; \"still 200\" is not stated for GET /products?by_brand (L21). The assumed reading (L25 applies to the brand search only) is one the sources allow and contradicts none, recorded as an assumption."
+    },
+    {
+      "ref": "GET /products",
+      "verdict": "supported",
+      "evidence": "story.md#L21",
+      "note": "Method, path and by_brand parameter appear at L21."
+    },
+    {
+      "ref": "GET /brands",
+      "verdict": "supported",
+      "evidence": "story.md#L22",
+      "note": "Method and path appear at L22."
+    },
+    {
+      "ref": "GET /brands/{id}",
+      "verdict": "supported",
+      "evidence": "story.md#L23",
+      "note": "Method and path appear at L23."
+    },
+    {
+      "ref": "GET /brands/search",
+      "verdict": "supported",
+      "evidence": "story.md#L24",
+      "note": "Method, path and q parameter appear at L24; the success text cites L25 for the no-match case."
+    }
+  ],
+  "missed": [],
+  "observations": [
+    {
+      "field": "testData.constraints",
+      "note": "\"the brands MightyCraft Hardware and ForgeFlex Tools exist in the catalogue\" is inferred from L24's search examples; the pack gives them as examples of what the search finds, not as a stated data requirement. A fair reading, but an inference."
+    }
+  ],
+  "summary": "Every requirement-bearing line (L20-L25, L27, L29) is captured faithfully and the open oracle questions (success statuses, which brands, what L25's no-match applies to) are recorded as gaps; nothing is invented or missed. The pack contains no API document, no linked pages and no screenshots.",
+  "itemHashes": {
+    "AC-1": "f4c12b5b317b",
+    "AC-2": "375c1330d983",
+    "AC-3": "a0597f12b83e",
+    "AC-4": "bc0395ee01bb",
+    "AC-5": "5fa1f8fdd6ba",
+    "AC-6": "97e6a69b2f13",
+    "E1": "8604f28850ea",
+    "G3": "8a9481550869",
+    "G4": "f22b5596cfcf",
+    "G5": "ce88deb20951",
+    "GET /products": "7e724d6847cd",
+    "GET /brands": "74dc98cfa5db",
+    "GET /brands/{id}": "489ba6cd5048",
+    "GET /brands/search": "3c19aeab12f2",
+    "auth": "74234e98afe7",
+    "coverage": "1868565bfbb3"
+  }
+}

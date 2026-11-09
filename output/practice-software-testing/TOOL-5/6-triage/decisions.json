@@ -1,0 +1,78 @@
+{
+  "02-eval": {
+    "SCN-001": {
+      "category": "SCRIPT_DEFECT",
+      "title": "tickFilter returns before the shop page has re-rendered the filtered list",
+      "rationale": "Failed on the first attempt, passed on retry. The failing attempt's trace shows the filtered QUERY /products (by_brand=ForgeFlex) answered 200, yet the test then looked up products of the unfiltered first page (Bolt Cutters, Long Nose Pliers, Slip Joint Pliers: 4 MightyCraft Hardware products): it read the cards before the page replaced them. Replayed live, the settled filtered list holds no Bolt Cutters and only ForgeFlex products (P21). The journey tickFilter waits for a /products response and networkidle, not for the list to change; and the unfiltered and filtered first pages both start with Combination Pliers, so a first-name wait would not tell them apart either. A race in the test's waiting, not the application.",
+      "evidence": "P21: inspect, ticked ForgeFlex Tools then probed the list: settled list starts with Combination Pliers, Bolt Cutters 0 matches; the 02-eval trace of SCN-001 (heldout trace) shows the filtered QUERY answered before the lookups of unfiltered products",
+      "action": "Repair in the journey tickFilter (journeys/fixtures/products.ts): after the filter's QUERY /products answers, wait until the shown cards are the ones that answer lists (e.g. compare the card ids/hrefs with the response's data ids, or wait for the card set to change), not only for any /products response and networkidle.",
+      "confirmedAt": "2026-11-09T03:27:11.823Z",
+      "failure": "[REQ AC-1] only products of \"ForgeFlex Tools\" are shown"
+    },
+    "SCN-005.1": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Major",
+      "title": "Brand search matches only at the start of a brand name, not anywhere in it",
+      "rationale": "AC-5 requires GET /brands/search?q= to find brands whose name contains the text anywhere in the name, ignoring case, and names 'craft' finding MightyCraft Hardware as its example. Replayed live without credentials (G7): q=craft and q=fLeX (text inside the name) answer 200 with an empty list, while q=MightyCraft, q=ForgeFlex and q=FORGE (text at the start of the name, FORGE in another case) answer the brand. Case is ignored, but only a prefix matches: the requirement's own example fails. SCN-011 fails at its first step on the same q=craft call. The calls, paths and parameter match the declared endpoint, so the mechanics are right.",
+      "evidence": "P13 P14 P15 P16 P17: replayed live 2026-11-09 with api-probe; q=craft -> 200 [] (P13), q=fLeX -> 200 [] (P16); controls q=MightyCraft -> MightyCraft Hardware (P14), q=FORGE -> ForgeFlex Tools (P15), q=ForgeFlex -> ForgeFlex Tools (P17)",
+      "confirmedAt": "2026-11-09T03:26:50.683Z",
+      "failure": "[REQ AC-5] GET /brands/search?q=craft finds \"MightyCraft Hardware\""
+    },
+    "SCN-005.4": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Major",
+      "title": "Brand search matches only at the start of a brand name, not anywhere in it",
+      "rationale": "AC-5 requires GET /brands/search?q= to find brands whose name contains the text anywhere in the name, ignoring case, and names 'craft' finding MightyCraft Hardware as its example. Replayed live without credentials (G7): q=craft and q=fLeX (text inside the name) answer 200 with an empty list, while q=MightyCraft, q=ForgeFlex and q=FORGE (text at the start of the name, FORGE in another case) answer the brand. Case is ignored, but only a prefix matches: the requirement's own example fails. SCN-011 fails at its first step on the same q=craft call. The calls, paths and parameter match the declared endpoint, so the mechanics are right.",
+      "evidence": "P13 P14 P15 P16 P17: replayed live 2026-11-09 with api-probe; q=craft -> 200 [] (P13), q=fLeX -> 200 [] (P16); controls q=MightyCraft -> MightyCraft Hardware (P14), q=FORGE -> ForgeFlex Tools (P15), q=ForgeFlex -> ForgeFlex Tools (P17)",
+      "confirmedAt": "2026-11-09T03:26:50.683Z",
+      "failure": "[REQ AC-5] GET /brands/search?q=fLeX finds \"ForgeFlex Tools\""
+    },
+    "SCN-007": {
+      "category": "SCRIPT_DEFECT",
+      "title": "SCN-007 compares the shop page with an unfiltered API list, ignoring the page's default price range",
+      "rationale": "The shop page always sends its list request with the default price range between=price,1,100 and is_rental=false besides by_brand (P19, P9). The test compares the page with GET /products?by_brand=<id> without those parameters (40 products, P18), so the 4 ForgeFlex products priced above 100 (Workbench with Drawers 178.2, Random Orbit Sander 100.79, Cordless Drill 20V 125.23, Cordless Drill 18V 119.24) can never be on the page. The same call with the page's parameters answers 36 products, exactly the 40 minus those 4 (P20), which is what the page showed. Every product shown was a ForgeFlex product, so AC-1's 'only that brand's products' holds; the mismatch is the test's comparison, not the application.",
+      "evidence": "P18 P19 P20: api-probe by_brand all pages -> total 40 with the 4 priced over 100 (P18); inspect ticking ForgeFlex Tools -> QUERY /products body {between: price,1,100, by_brand, is_rental: false} (P19); api-probe with between=price,1,100&is_rental=false -> total 36, none of the 4 (P20)",
+      "action": "Repair in the test (tool-5.spec.ts SCN-007, the API step): compare with GET /products using the same parameters the page sends (between=price,1,100, is_rental=false, by_brand), or read the page's own list request; no expected value changes.",
+      "confirmedAt": "2026-11-09T03:27:01.043Z",
+      "failure": "[REQ AC-1] the \"By brand\" filter for \"ForgeFlex Tools\" shows the products GET /products?by_brand=01M6J4V54D8SR41SBQZACFZ74G answers"
+    },
+    "SCN-011": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Major",
+      "title": "Brand search matches only at the start of a brand name, not anywhere in it",
+      "rationale": "AC-5 requires GET /brands/search?q= to find brands whose name contains the text anywhere in the name, ignoring case, and names 'craft' finding MightyCraft Hardware as its example. Replayed live without credentials (G7): q=craft and q=fLeX (text inside the name) answer 200 with an empty list, while q=MightyCraft, q=ForgeFlex and q=FORGE (text at the start of the name, FORGE in another case) answer the brand. Case is ignored, but only a prefix matches: the requirement's own example fails. SCN-011 fails at its first step on the same q=craft call. The calls, paths and parameter match the declared endpoint, so the mechanics are right.",
+      "evidence": "P13 P14 P15 P16 P17: replayed live 2026-11-09 with api-probe; q=craft -> 200 [] (P13), q=fLeX -> 200 [] (P16); controls q=MightyCraft -> MightyCraft Hardware (P14), q=FORGE -> ForgeFlex Tools (P15), q=ForgeFlex -> ForgeFlex Tools (P17)",
+      "confirmedAt": "2026-11-09T03:26:50.683Z",
+      "failure": "[REQ AC-5] GET /brands/search?q=craft finds \"MightyCraft Hardware\""
+    }
+  },
+  "04-rerun": {
+    "SCN-005.1": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Major",
+      "title": "Brand search matches only at the start of a brand name, not anywhere in it",
+      "rationale": "AC-5 requires GET /brands/search?q= to find brands whose name contains the text anywhere in the name, ignoring case, and names 'craft' finding MightyCraft Hardware as its example. Replayed live without credentials (G7): q=craft and q=fLeX (text inside the name) answer 200 with an empty list, while q=MightyCraft, q=ForgeFlex and q=FORGE (text at the start of the name, FORGE in another case) answer the brand. Case is ignored, but only a prefix matches: the requirement's own example fails. SCN-011 fails at its first step on the same q=craft call. The calls, paths and parameter match the declared endpoint, so the mechanics are right. (Confirmed in run 02-eval; identical failure signature in 04-rerun.)",
+      "evidence": "P13 P14 P15 P16 P17: replayed live 2026-11-09 with api-probe; q=craft -> 200 [] (P13), q=fLeX -> 200 [] (P16); controls q=MightyCraft -> MightyCraft Hardware (P14), q=FORGE -> ForgeFlex Tools (P15), q=ForgeFlex -> ForgeFlex Tools (P17)",
+      "confirmedAt": "2026-11-09T03:26:50.683Z",
+      "failure": "[REQ AC-5] GET /brands/search?q=craft finds \"MightyCraft Hardware\""
+    },
+    "SCN-005.4": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Major",
+      "title": "Brand search matches only at the start of a brand name, not anywhere in it",
+      "rationale": "AC-5 requires GET /brands/search?q= to find brands whose name contains the text anywhere in the name, ignoring case, and names 'craft' finding MightyCraft Hardware as its example. Replayed live without credentials (G7): q=craft and q=fLeX (text inside the name) answer 200 with an empty list, while q=MightyCraft, q=ForgeFlex and q=FORGE (text at the start of the name, FORGE in another case) answer the brand. Case is ignored, but only a prefix matches: the requirement's own example fails. SCN-011 fails at its first step on the same q=craft call. The calls, paths and parameter match the declared endpoint, so the mechanics are right. (Confirmed in run 02-eval; identical failure signature in 04-rerun.)",
+      "evidence": "P13 P14 P15 P16 P17: replayed live 2026-11-09 with api-probe; q=craft -> 200 [] (P13), q=fLeX -> 200 [] (P16); controls q=MightyCraft -> MightyCraft Hardware (P14), q=FORGE -> ForgeFlex Tools (P15), q=ForgeFlex -> ForgeFlex Tools (P17)",
+      "confirmedAt": "2026-11-09T03:26:50.683Z",
+      "failure": "[REQ AC-5] GET /brands/search?q=fLeX finds \"ForgeFlex Tools\""
+    },
+    "SCN-011": {
+      "category": "APPLICATION_DEFECT",
+      "severity": "Major",
+      "title": "Brand search matches only at the start of a brand name, not anywhere in it",
+      "rationale": "AC-5 requires GET /brands/search?q= to find brands whose name contains the text anywhere in the name, ignoring case, and names 'craft' finding MightyCraft Hardware as its example. Replayed live without credentials (G7): q=craft and q=fLeX (text inside the name) answer 200 with an empty list, while q=MightyCraft, q=ForgeFlex and q=FORGE (text at the start of the name, FORGE in another case) answer the brand. Case is ignored, but only a prefix matches: the requirement's own example fails. SCN-011 fails at its first step on the same q=craft call. The calls, paths and parameter match the declared endpoint, so the mechanics are right. (Confirmed in run 02-eval; identical failure signature in 04-rerun.)",
+      "evidence": "P13 P14 P15 P16 P17: replayed live 2026-11-09 with api-probe; q=craft -> 200 [] (P13), q=fLeX -> 200 [] (P16); controls q=MightyCraft -> MightyCraft Hardware (P14), q=FORGE -> ForgeFlex Tools (P15), q=ForgeFlex -> ForgeFlex Tools (P17)",
+      "confirmedAt": "2026-11-09T03:26:50.683Z",
+      "failure": "[REQ AC-5] GET /brands/search?q=craft finds \"MightyCraft Hardware\""
+    }
+  }
+}

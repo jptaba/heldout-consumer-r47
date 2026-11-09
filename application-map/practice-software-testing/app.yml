@@ -1,0 +1,27 @@
+# What this application is, and what is known of its business. Written by `heldout map`, one entry per line, so two
+# branches merge by keeping both sides' lines. overview: every agent reads it (heldout map --overview); rules: read
+# after a story's freeze only (heldout map KEY --rules). Neither is ever a story's evidence.
+schema: 1
+overview:
+- {"id":"Ob59193","part":"purpose","text":"an online shop for hand and power tools, with a web shop and a public catalogue API the mobile app uses","by":"onboarding","at":"2026-11-09T03:03:19.415Z"}
+- {"id":"Obcd8e7","part":"area","text":"products: the tool catalogue, its search, sorting and filters, and each product's page","by":"onboarding","at":"2026-11-09T03:03:20.942Z"}
+- {"id":"Oaa2059","part":"area","text":"brands and categories: how the catalogue is grouped","by":"onboarding","at":"2026-11-09T03:03:22.453Z"}
+- {"id":"O537c83","part":"area","text":"carts: what a visitor collects before checkout","by":"onboarding","at":"2026-11-09T03:03:23.945Z"}
+- {"id":"Oe04acc","part":"area","text":"account: a signed-in customer's profile, favorites, invoices and messages","by":"onboarding","at":"2026-11-09T03:03:25.486Z"}
+- {"id":"O5b9ce4","part":"area","text":"contact: questions sent to the shop","by":"onboarding","at":"2026-11-09T03:03:27.006Z"}
+- {"id":"Odf6815","part":"user","text":"visitors who are not signed in, signed-in customers, and administrators who manage the shop","by":"onboarding","at":"2026-11-09T03:03:28.500Z"}
+- {"id":"Oa0eb39","part":"sign-in","text":"an e-mail address and a password on the sign-in page; the API signs in with the same and answers a bearer token","by":"onboarding","at":"2026-11-09T03:03:30.005Z"}
+- {"id":"O4925cc","part":"api","text":"a REST API answering JSON, on its own host, described by an OpenAPI document; resources such as products, brands, categories, carts, users, invoices and messages","by":"onboarding","at":"2026-11-09T03:03:31.531Z"}
+- {"id":"Oeffa6c","part":"term","text":"brand: the maker a product belongs to","by":"onboarding","at":"2026-11-09T03:03:33.066Z"}
+- {"id":"Ob37624","part":"term","text":"category: a group of products, nested as a tree under parent categories","by":"onboarding","at":"2026-11-09T03:03:34.621Z"}
+rules:
+- {"id":"B63bf38","kind":"observed","text":"GET /brands/search?q= found a brand for the start of its name in any letter case (forge, MIGHTYCRAFT HARDWARE) and answered an empty list for text inside the name (craft, fLeX)","domain":"brands","story":"TOOL-5","source":["P12"],"at":"2026-11-09T03:20:25.054Z"}
+- {"id":"B21283b","kind":"observed","text":"With no price range chosen, the shop page asked for between=price,1,100: its list for a ticked brand left out that brand's products priced above 100, which GET /products?by_brand lists","domain":"products","story":"TOOL-5","source":["P8"],"at":"2026-11-09T03:20:26.649Z"}
+- {"id":"B986bbf","kind":"observed","text":"GET /brands/{id} for an id no brand has answered 404 with {message: 'Requested item not found'}","domain":"brands","story":"TOOL-5","source":["P4"],"at":"2026-11-09T03:20:28.227Z"}
+- {"id":"B101192","kind":"observed","text":"GET /brands, GET /brands/{id}, GET /brands/search and GET /products?by_brand answered without any sign-in","domain":"brands","story":"TOOL-5","source":["P1"],"at":"2026-11-09T03:20:29.815Z"}
+- {"id":"B59aec3","kind":"observed","text":"DELETE /carts/{id} for a cart deleted moments before answered 404 {message: 'Cart doesnt exists'}; GET /carts/{id} for a deleted or never-made cart answered 404 {message: 'Requested item not found'}","domain":"carts","story":"TOOL-3","source":["P2"],"at":"2026-11-09T12:08:15.259Z"}
+- {"id":"B98330d","kind":"observed","text":"POST /carts/{id} with quantity 0 answered 422 {message, errors: {quantity: ['The quantity field must be at least 1.']}}","domain":"carts","story":"TOOL-3","source":["P2"],"at":"2026-11-09T12:08:16.825Z"}
+- {"id":"B6a0484","kind":"observed","text":"GET, POST and DELETE on /carts answered without any sign-in","domain":"carts","story":"TOOL-3","source":["P2"],"at":"2026-11-09T12:08:18.389Z"}
+- {"id":"B32a5a4","kind":"observed","text":"For a deleted cart, POST /carts/{id} (add a product) answered 404 {message: 'Cart not found'} and DELETE /carts/{id}/product/{productId} answered 404 {message: 'Cart doesnt exists'}","domain":"carts","story":"TOOL-3","source":["P7"],"at":"2026-11-09T12:11:04.385Z"}
+- {"id":"B533f8d","kind":"required","text":"The web shop keeps the cart across page views.","story":"TOOL-3","source":["R1"],"at":"2026-11-09T12:11:27.556Z"}
+- {"id":"B913e03","kind":"required","text":"A quantity added to a cart is from 1 to 99; a quantity outside 1–99 is rejected.","story":"TOOL-3","source":["R2"],"at":"2026-11-09T12:11:27.556Z"}

@@ -1,0 +1,5 @@
+
+# held-out evaluator (append-only story logs merge by keeping both sides)
+output/**/*.jsonl merge=union
+application-map/**/*.jsonl merge=union
+application-map/**/app.yml merge=union

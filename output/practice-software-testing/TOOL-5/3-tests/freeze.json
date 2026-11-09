@@ -1,0 +1,74 @@
+{
+  "frozenAt": "2026-11-09T03:13:24.589Z",
+  "specs": {
+    "tool-5.spec.ts": "23d11c7808187408b5faac5c9adf5a24e6452d29ef6d007204035c88d932c035"
+  },
+  "assertions": {
+    "tool-5.spec.ts": {
+      "req": {
+        "[REQ AC-1 strict] the shop page has a \"By brand\" filter": "d1258f0ed0146ce48fc9fe1874700bcea1aba7f0b4d0a33d4072a8663ad91335",
+        "[REQ AC-1] the \"By brand\" filter lists the brands": "447cf05803b5b122483889247166e3cfdf46fbbee2b94414a203c51cb6dbcf8d",
+        "[REQ AC-1] products of \"${brand}\" are shown": "447cf05803b5b122483889247166e3cfdf46fbbee2b94414a203c51cb6dbcf8d",
+        "[REQ AC-1] only products of \"${brand}\" are shown": "0b6da14c0cf672d2c849e8ee09a1b435322d3ffb2d6487add222253dc1e6aa03",
+        "[REQ AC-2] GET /products?by_brand lists the brand\\'s products": "447cf05803b5b122483889247166e3cfdf46fbbee2b94414a203c51cb6dbcf8d",
+        "[REQ AC-2] GET /products?by_brand=${brand.id} answers only products of \"${brand.name}\"": "0b6da14c0cf672d2c849e8ee09a1b435322d3ffb2d6487add222253dc1e6aa03",
+        "[REQ AC-3] GET /brands answers the brands": "447cf05803b5b122483889247166e3cfdf46fbbee2b94414a203c51cb6dbcf8d",
+        "[REQ AC-3] GET /brands includes \"${name}\"": "6e934a7a6228203a3f07a4bd925c44c6e87df0589b6f6a02f1ff42ad3e17d357",
+        "[REQ AC-4] GET /brands/${brand.id} answers the brand with that id": "c64c3e98d291ece45ad3b88f1eb474b1efe317ba3aa1cd02c542aaae7e8eac2b",
+        "[REQ AC-4] GET /brands/${brand.id} answers \"${brand.name}\"": "4f5a049317343d933723f35d873e10ce056d2624bb7b50c86c5677c59acb3d24",
+        "[REQ AC-5] GET /brands/search?q=${row.q} finds \"${row.finds}\"": "5710abad802c3b9d74725cafa99aedf9d10892eac598b6d22e2e38858eb50f64",
+        "[REQ AC-5] GET /brands/search?q=${row.q} finds only brands whose name contains it": "0b6da14c0cf672d2c849e8ee09a1b435322d3ffb2d6487add222253dc1e6aa03",
+        "[REQ AC-6] GET /brands/search?q=${text} answers a list": "5086f18410f48f880dd17f150d762e52713e76335df58ec610f4ed7a9acf34ff",
+        "[REQ AC-6] GET /brands/search?q=${text} answers an empty list": "44c144414a6f7b551a2bcbbf1386c7ae8443bc34b65a5ec5ee7154d5a3b017f7",
+        "[REQ AC-1] the \"By brand\" filter for \"${brand.name}\" shows the products GET /products?by_brand=${brand.id} answers": "ba76082c2f9c96f7a06a6cf20b25fd9c4415b59526c9f44251dab1cd9052b104",
+        "[REQ AC-3] GET /brands answers each brand with its id, name and slug": "0b6da14c0cf672d2c849e8ee09a1b435322d3ffb2d6487add222253dc1e6aa03",
+        "[REQ AC-3] GET /brands answers the brands #2": "447cf05803b5b122483889247166e3cfdf46fbbee2b94414a203c51cb6dbcf8d",
+        "[REQ AC-5] GET /brands/search?q=${name.toUpperCase()} finds \"${name}\"": "6e934a7a6228203a3f07a4bd925c44c6e87df0589b6f6a02f1ff42ad3e17d357",
+        "[REQ AC-5] GET /brands/search?q=${q} finds \"${finds}\"": "f31a5549fc8796cf5fb5cfee9084bf5d3016cb8fa104c0075e094577b8bd3393",
+        "[REQ AC-4] GET /brands/${id} answers \"${finds}\"": "28691a04c1f72ecf6bfcff1d42ac0769fa6b47835a575a47df25b555ebc88c27",
+        "[REQ AC-2] GET /products?by_brand=${id} answers only products of \"${finds}\"": "0b6da14c0cf672d2c849e8ee09a1b435322d3ffb2d6487add222253dc1e6aa03",
+        "[REQ AC-2] GET /products?by_brand answers": "5cc4275ada374a1a029602035b8594d3d16d4ef01777311b26c649f9fc1909a6",
+        "[REQ AC-3] GET /brands answers": "5cc4275ada374a1a029602035b8594d3d16d4ef01777311b26c649f9fc1909a6",
+        "[REQ AC-4] GET /brands/${brand.id} answers": "5cc4275ada374a1a029602035b8594d3d16d4ef01777311b26c649f9fc1909a6",
+        "[REQ AC-5] GET /brands/search?q=${row.q} answers": "5cc4275ada374a1a029602035b8594d3d16d4ef01777311b26c649f9fc1909a6",
+        "[REQ AC-6] GET /brands/search?q=${text} still answers 200": "2369e830871230cf913cfc457e06978ca7a43c40b71ca68befb6b0bd965ba32d",
+        "[REQ AC-2] GET /products?by_brand answers #2": "5cc4275ada374a1a029602035b8594d3d16d4ef01777311b26c649f9fc1909a6",
+        "[REQ AC-4] GET /brands/${id} with an unknown id answers 404": "cd3c9196cb0de5efdb62ddae07090b8957ba676c8818ea9d7b5b656126801ecb",
+        "[REQ AC-3] GET /brands answers #2": "5cc4275ada374a1a029602035b8594d3d16d4ef01777311b26c649f9fc1909a6",
+        "[REQ AC-4] GET /brands/${id} answers": "5cc4275ada374a1a029602035b8594d3d16d4ef01777311b26c649f9fc1909a6",
+        "[REQ AC-2] GET /products?by_brand=${id} answers": "5cc4275ada374a1a029602035b8594d3d16d4ef01777311b26c649f9fc1909a6"
+      },
+      "constants": "04cd2309fbdf2f02a73e1d388a740c75641a9fbd05420fd2fa995727653cfd98"
+    }
+  },
+  "contractOracle": "{\n  \"acs\": [\n    {\n      \"id\": \"AC-1\",\n      \"text\": \"The shop page has a \\\"By brand\\\" filter listing the brands; ticking one shows only that brand's products.\",\n      \"outcomes\": [\n        \"the shop page has a filter \\\"By brand\\\" that lists the brands\",\n        \"after ticking one brand, every product shown is a product of that brand\"\n      ]\n    },\n    {\n      \"id\": \"AC-2\",\n      \"text\": \"The catalogue API supports the same: GET /products?by_brand=<brand id> returns only products of that brand.\",\n      \"outcomes\": [\n        \"GET /products?by_brand=<brand id> answers only products of that brand\"\n      ]\n    },\n    {\n      \"id\": \"AC-3\",\n      \"text\": \"GET /brands returns all brands, each with its id, name and slug.\",\n      \"outcomes\": [\n        \"GET /brands answers all brands\",\n        \"each brand in the answer has its id, name and slug\"\n      ]\n    },\n    {\n      \"id\": \"AC-4\",\n      \"text\": \"GET /brands/{id} returns that brand. An unknown id returns 404.\",\n      \"outcomes\": [\n        \"GET /brands/{id} with the id of an existing brand answers that brand\",\n        \"GET /brands/{id} with an unknown id → 404\"\n      ]\n    },\n    {\n      \"id\": \"AC-5\",\n      \"text\": \"Brand search for the mobile app: GET /brands/search?q=<text> finds brands whose name contains the text anywhere in the name, ignoring case (e.g. \\\"craft\\\" finds MightyCraft Hardware, \\\"FORGE\\\" finds ForgeFlex Tools).\",\n      \"outcomes\": [\n        \"GET /brands/search?q=<text> finds the brands whose name contains the text anywhere in the name, ignoring case\",\n        \"q \\\"craft\\\" finds MightyCraft Hardware\",\n        \"q \\\"FORGE\\\" finds ForgeFlex Tools\"\n      ]\n    },\n    {\n      \"id\": \"AC-6\",\n      \"text\": \"A brand search with no match returns an empty list, still with 200.\",\n      \"outcomes\": [\n        \"a search text no brand name contains → empty list\",\n        \"the status is still 200\"\n      ]\n    }\n  ],\n  \"rules\": [],\n  \"errorModel\": [\n    {\n      \"id\": \"E1\",\n      \"case\": \"GET /brands/{id} with an unknown id\",\n      \"status\": 404,\n      \"body\": null\n    }\n  ],\n  \"oracleGaps\": [\n    {\n      \"id\": \"G3\",\n      \"resolution\": \"open\",\n      \"value\": null\n    },\n    {\n      \"id\": \"G4\",\n      \"resolution\": \"open\",\n      \"value\": null\n    },\n    {\n      \"id\": \"G5\",\n      \"resolution\": \"assumed\",\n      \"value\": \"L25 applies to GET /brands/search: a search text no brand name contains answers an empty list with 200. Nothing is expected of GET /products?by_brand for a brand without products or an unknown brand id\"\n    }\n  ]\n}",
+  "journeys": {
+    "api.brands.all-brand-names": "13dda236fc2b",
+    "api.brands.brand-id-of": "ea0b7dfcb0e6",
+    "api.brands.brand-name-of": "984f3190c399",
+    "api.brands.find-brand": "a7cfaabcf7c2",
+    "api.brands.read-brands": "3f63ca92d80f",
+    "api.brands.unknown-brand-id": "97bfe64a12c3",
+    "api.products.last-page-of": "1972ce5d08ea",
+    "api.products.product-brand-id": "54181fb49b80",
+    "api.products.product-brand-name": "276371cee146",
+    "api.products.product-name-of": "a5145f501897",
+    "api.products.read-products": "cf0b5f4b4664",
+    "ui.products.brands-of-shown-products": "90ffef1d4cae",
+    "ui.products.filter-options": "2b470289149a",
+    "ui.products.open-shop": "0e1b3f26d4d5",
+    "ui.products.shown-product-names": "5d7fececba54",
+    "ui.products.shown-product-names-all-pages": "b27ba4dd5c71",
+    "ui.products.tick-filter": "3ad2e3f67410"
+  },
+  "refreezes": [],
+  "amendments": [
+    {
+      "assertion": "tool-5.spec.ts: [REQ AC-1 strict] the shop page has a \"By brand\" filter",
+      "draft": "page.getByText(REQ.FILTER_HEADING, { exact: true }) .toBeVisible()",
+      "current": "page.getByText(new RegExp(`^${REQ.FILTER_HEADING}:?$`)) .toBeVisible()",
+      "reason": "Over-strict implementation: an exact text match fails on the heading's trailing colon (By brand:, P6), which is punctuation, not another word. The expected text stays REQ.FILTER_HEADING; only an optional colon after it is accepted.",
+      "approvedAt": "2026-11-09T03:23:21.221Z"
+    }
+  ]
+}

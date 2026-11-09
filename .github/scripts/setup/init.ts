@@ -1,0 +1,190 @@
+/**
+ * Setup — scaffold everything a project needs to run held-out evaluations (idempotent; never overwrites).
+ *
+ *   heldout init --base-url https://aut.example.com [--api-base-url …] [--name "My App"] [--profile <id>]
+ *                [--test-id-attr data-testid] [--healthcheck "/,api:/health"]
+ *                [--jira mock|datacenter] [--jira-url https://jira.example.com] [--ac-field customfield_10035]
+ *                [--install] [--ci]
+ *   heldout init [--profile <id>] --data-prefix qa        the prefix of the names tests make (default "hldout")
+ *   heldout init [--profile <id>] --max-workers 1 --min-test-interval-ms 10000   pacing for a rate-limited host
+ *   heldout init --git-hooks        a pre-commit hook (opt-in) that runs heldout precommit: no secret value, no file
+ *                                   over 1 MB in the output folder, in a commit
+ *
+ * setup.ps1 / setup.sh at the root of the skill's clone run it for a new project (and `update` for a set-up one).
+ * Run from the skill repository (a clone anywhere, any git host), it first runs that repository's `update`, which
+ * installs the skill, its scripts, the subagents and the workspace files (and the CI pipeline with --ci [gitlab|github]),
+ * then continues from the project's own copy of the scripts. There it creates or completes, and never overwrites:
+ * heldout.config.json (with $schema for editor help), .env (from .env.example), package.json (the `heldout` npm script
+ * and dev dependencies), .gitignore entries, mock-jira/, output/ and journeys/fixtures/, and the root .mcp.json (Claude Code reads MCP
+ * servers only there) with the skill's servers from .vscode/mcp.json, added to any the project already has. --install runs `npm install` and installs
+ * Chromium. Unless given, the profile id comes from the host name, and one visit of the start page supplies the name
+ * (page title), the test-id attribute and blockHosts (the ad/analytics networks the page loads).
+ */
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { flagStr, type Args, type CommandSpec } from '../core/cli';
+import { AGENT_FILES, CONFIG_SCHEMA, SCRIPTS_DIR, SKILL_DIR, UPDATE_HINT, ensureGitattributes, ensureGitignore } from '../core/config';
+import { ROOT, rel } from '../core/files';
+import { JIRA_MODES } from '../core/profile';
+import { profileIdFor } from '../probe/detect';
+import { installGitHook } from './git-hook';
+import { MCP_FILE, mcpServersIn, writeClaudeCodeMcp } from './mcp-config';
+import { discover, profileFrom, say } from './profile-setup';
+
+export const spec: CommandSpec = {
+  name: 'init', group: 'Setup', usage: '--base-url <url> [--api-base-url <url>] [--name …] [--profile id] [--install] [--ci] [--git-hooks]',
+  about: 'set a project up: update, then config, npm script, .gitignore, .env (never overwrites)',
+  flags: ['ac-field', 'api-base-url', 'base-url', 'ci', 'data-prefix', 'git-hooks', 'healthcheck', 'install', 'jira', 'jira-url', 'max-workers', 'min-test-interval-ms', 'name', 'profile', 'test-id-attr'], words: 0,
+};
+
+/** Files update copies from the skill repository; init only checks they are there. */
+const WORKSPACE_FILES = ['playwright.config.ts', 'tsconfig.json', MCP_FILE, '.env.example', 'heldout-support/fixtures.ts', 'heldout-support/shared-teardown.ts', ...AGENT_FILES];
+/** A new project's heldout.config.json: flags and one visit of the application fill in the profile. */
+const STARTER_CONFIG = {
+  jira: { mode: 'mock', mockRoot: 'mock-jira', baseUrl: 'https://jira.example.com', acceptanceCriteriaField: '', verdictLabelPrefix: 'heldout-' },
+  outputDir: 'output',
+  journeysDir: 'journeys',
+  run: { retries: 1, workers: 4, headless: true, actionTimeoutMs: 10000, expectTimeoutMs: 5000, testTimeoutMs: 60000 },
+};
+const STARTER_PROFILE = {
+  testIdAttribute: 'data-testid',
+  healthcheck: ['/'],
+  notes: 'Everything AUT-specific belongs here or in .env, never inside the skill. Add one profile per application: its stories go to output/<profile>/<KEY>/; its journeys go to journeys/ (a second application gets its own journeysDir).',
+};
+/**
+ * The exact versions the skill is tested with (the skill repository's own package.json: tests/supply-chain.test.ts), so
+ * a release on the day of setup changes nothing; a project moves past them on its own terms.
+ */
+export const DEV_DEPENDENCIES: Record<string, string> = { '@playwright/test': '1.63.0', tsx: '4.23.15', typescript: '7.0.2', '@types/node': '26.6.3' };
+
+const PROJECT_SCRIPTS = path.join(ROOT, '.github', 'scripts');
+
+function ensurePackageJson(): boolean {
+  const file = path.join(ROOT, 'package.json');
+  const pkg = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : { name: path.basename(ROOT).toLowerCase().replace(/[^a-z0-9-]+/g, '-'), private: true, version: '0.0.0' };
+  const created = !fs.existsSync(file);
+  pkg.scripts ??= {};
+  pkg.devDependencies ??= {};
+  let changed = created;
+  const script = `tsx ${rel(path.join(SCRIPTS_DIR, 'heldout.ts'))}`;
+  if (!pkg.scripts.heldout) { pkg.scripts.heldout = script; changed = true; }
+  const missing = Object.entries(DEV_DEPENDENCIES).filter(([d]) => !pkg.devDependencies[d] && !pkg.dependencies?.[d]);
+  for (const [d, v] of missing) pkg.devDependencies[d] = v;
+  if (missing.length) changed = true;
+  if (changed) fs.writeFileSync(file, `${JSON.stringify(pkg, null, 2)}\n`);
+  say(changed ? '✔' : '•', `${created ? 'created' : changed ? 'updated' : 'keep   '} package.json${missing.length ? ` (+ ${missing.map(([d]) => d).join(', ')})` : ''}${changed ? ' — npm script "heldout"' : ''}`);
+  return missing.length > 0 || created;
+}
+
+
+export async function run({ flags, argv }: Args): Promise<void> {
+  const configFile = path.join(ROOT, 'heldout.config.json');
+  const existingProject = fs.existsSync(configFile);
+
+  // Started from the skill repository: its update installs the skill and the workspace files (and the CI pipeline with
+  // --ci), then init continues from the project's own copy of the scripts.
+  const toSkill = path.relative(ROOT, SKILL_DIR);
+  if (toSkill.startsWith('..') || path.isAbsolute(toSkill)) {
+    const heldout = (dispatcher: string, args: string[], env: NodeJS.ProcessEnv = process.env) =>
+      spawnSync(process.execPath, [...process.execArgv, dispatcher, ...args], { stdio: 'inherit', cwd: ROOT, env }).status ?? 1;
+    const ciAt = argv.indexOf('--ci');
+    const ciArgs = ciAt < 0 ? [] : ['--ci', ...(['gitlab', 'github'].includes(argv[ciAt + 1]) ? [argv[ciAt + 1]] : [])];
+    const updated = heldout(path.join(SCRIPTS_DIR, 'heldout.ts'), ['update', ...ciArgs], { ...process.env, HELDOUT_INIT: '1' });
+    if (updated !== 0) process.exit(updated);
+    const rest = argv.filter((_a, i) => ciAt < 0 || (i !== ciAt && !(i === ciAt + 1 && ciArgs.length === 2)));
+    process.exit(heldout(path.join(PROJECT_SCRIPTS, 'heldout.ts'), ['init', ...rest]));
+  }
+  // The CI pipeline comes from the skill repository: init passes --ci on to update when started from there.
+  if (flags.ci) say('⚠', 'the CI pipeline is copied from the skill repository: run setup from your clone of the skill with -Ci (setup.ps1) or --ci (setup.sh)');
+  for (const file of WORKSPACE_FILES) if (!fs.existsSync(path.join(ROOT, file))) say('⚠', `${file} is missing — to restore it, ${UPDATE_HINT}`);
+
+  if (fs.existsSync(configFile)) say('•', 'keep    heldout.config.json');
+  else {
+    if (!flagStr(flags, 'base-url')) throw new Error('--base-url is required the first time (the web address of the application to evaluate). Add --api-base-url if the API lives elsewhere.');
+    const id = flagStr(flags, 'profile') ?? profileIdFor(flagStr(flags, 'base-url')!);
+    const cfg = structuredClone(STARTER_CONFIG);
+    const jira = flagStr(flags, 'jira');
+    if (jira && !(JIRA_MODES as readonly string[]).includes(jira)) throw new Error(`--jira takes ${JIRA_MODES.join(' or ')}, not "${jira}"`);
+    if (jira) cfg.jira.mode = jira;
+    if (flagStr(flags, 'jira-url')) cfg.jira.baseUrl = flagStr(flags, 'jira-url')!;
+    if (flagStr(flags, 'ac-field')) cfg.jira.acceptanceCriteriaField = flagStr(flags, 'ac-field')!;
+    fs.writeFileSync(configFile, `${JSON.stringify({ $schema: rel(CONFIG_SCHEMA), defaultAut: id, auts: { [id]: profileFrom(flags, STARTER_PROFILE) }, ...cfg }, null, 2)}\n`);
+    say('✔', 'created heldout.config.json');
+  }
+  const envFile = path.join(ROOT, '.env');
+  if (fs.existsSync(envFile)) say('•', 'keep    .env');
+  else if (!fs.existsSync(path.join(ROOT, '.env.example'))) say('⚠', '.env not created: no .env.example to start it from');
+  else {
+    let env = fs.readFileSync(path.join(ROOT, '.env.example'), 'utf8');
+    if (flagStr(flags, 'jira')) env = env.replace(/^JIRA_MODE=.*$/m, `JIRA_MODE=${flagStr(flags, 'jira')}`);
+    if (flagStr(flags, 'jira-url')) env = env.replace(/^JIRA_BASE_URL=.*$/m, `JIRA_BASE_URL=${flagStr(flags, 'jira-url')}`);
+    fs.writeFileSync(envFile, env);
+    say('✔', 'created .env (git-ignored — secrets go here)');
+  }
+  const needInstall = ensurePackageJson();
+  ensureGitignore(say);
+  ensureGitattributes(say);
+  for (const d of ['mock-jira/issues', 'mock-jira/outbox', 'output', 'journeys/fixtures']) fs.mkdirSync(path.join(ROOT, d), { recursive: true });
+  // Claude Code reads MCP servers only from the root .mcp.json: give it the skill's servers from .vscode/mcp.json (those
+  // update recorded; the project's own VS Code servers stay VS Code's). Update already reported the file: say only a change.
+  const servers = mcpServersIn(path.join(ROOT, MCP_FILE));
+  if (servers) {
+    const sourceFile = path.join(SKILL_DIR, 'SOURCE.json');
+    const shipped = fs.existsSync(sourceFile) ? (JSON.parse(fs.readFileSync(sourceFile, 'utf8')) as { mcpServers?: string[] }).mcpServers : undefined;
+    writeClaudeCodeMcp(ROOT, Object.fromEntries(Object.entries(servers).filter(([name]) => !shipped || shipped.includes(name))), (mark, msg) => { if (mark !== '•') say(mark, msg); });
+  }
+
+  if (flags['git-hooks']) installGitHook(ROOT, say);
+
+  if (flags.install) {
+    const npm = (args: string[]) => spawnSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', args, { stdio: 'inherit', cwd: ROOT, shell: process.platform === 'win32' });
+    const npx = (args: string[]) => spawnSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', args, { stdio: 'inherit', cwd: ROOT, shell: process.platform === 'win32' });
+    console.log('\n▶ npm install'); if (npm(['install', '--no-fund', '--no-audit']).status !== 0) throw new Error('npm install failed — see the output above');
+    console.log('▶ npx playwright install chromium'); if (npx(['playwright', 'install', 'chromium']).status !== 0) throw new Error('Chromium install failed — see the output above');
+  }
+  // Pacing for a host that rate-limits bursts of traffic (heldout run suggests it after a 429).
+  const maxWorkers = flagStr(flags, 'max-workers'); const interval = flagStr(flags, 'min-test-interval-ms');
+  if (maxWorkers || interval) {
+    const cfg = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+    const id = flagStr(flags, 'profile') ?? cfg.defaultAut;
+    if (!cfg.auts[id]) throw new Error(`no AUT profile "${id}" in heldout.config.json`);
+    const n = (v: string, name: string, min: number) => { const x = Number(v); if (!Number.isInteger(x) || x < min) throw new Error(`--${name} takes a whole number ≥ ${min}`); return x; };
+    if (maxWorkers) cfg.auts[id].maxWorkers = n(maxWorkers, 'max-workers', 1);
+    if (interval) cfg.auts[id].minTestIntervalMs = n(interval, 'min-test-interval-ms', 0);
+    fs.writeFileSync(configFile, `${JSON.stringify(cfg, null, 2)}\n`);
+    say('✔', `auts.${id}: ${maxWorkers ? `at most ${cfg.auts[id].maxWorkers} worker(s)` : ''}${maxWorkers && interval ? ', ' : ''}${interval ? `tests start at least ${cfg.auts[id].minTestIntervalMs} ms apart` : ''}`);
+  }
+  // The prefix of every name the tests make on this AUT (default "hldout"), for an application whose rules need another.
+  const prefix = flagStr(flags, 'data-prefix');
+  if (prefix) {
+    const cfg = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+    const id = flagStr(flags, 'profile') ?? cfg.defaultAut;
+    if (!cfg.auts[id]) throw new Error(`no AUT profile "${id}" in heldout.config.json`);
+    if (!/^[A-Za-z][A-Za-z0-9._-]{0,15}$/.test(prefix)) throw new Error('--data-prefix starts with a letter and uses at most 16 letters, digits, dots, dashes or underscores');
+    cfg.auts[id].dataPrefix = prefix;
+    fs.writeFileSync(configFile, `${JSON.stringify(cfg, null, 2)}\n`);
+    say('✔', `auts.${id}: names the tests make start with "${prefix}" (users ${prefix}-…, records "${prefix} …")`);
+  }
+  if (flagStr(flags, 'base-url')) await discover(configFile, flagStr(flags, 'profile') ?? JSON.parse(fs.readFileSync(configFile, 'utf8')).defaultAut, flags, !flagStr(flags, 'profile'));
+
+  // setup runs doctor right after init: no need to ask for it.
+  const bySetup = Boolean(process.env.HELDOUT_SETUP);
+  // Run again in a set-up project: nothing to onboard.
+  if (existingProject && !flagStr(flags, 'base-url') && !(needInstall && !flags.install)) {
+    if (!bySetup) console.log('\nNext: npm run heldout -- doctor   (checks the project; stories and journeys carry on as before)');
+    return;
+  }
+  const steps = [
+    ...(needInstall && !flags.install ? ['npm install && npx playwright install chromium   (or re-run init with --install)'] : []),
+    ...(bySetup ? [] : ['npm run heldout -- doctor  checks config, AUT reachability, Jira, browser, the journeys']),
+    'Ask Opus: "Run a held-out evaluation of ABC-123"   (no Jira? npm run heldout -- new ABC-1 --from story.md)',
+  ];
+  console.log('\nNext:');
+  steps.forEach((s, i) => console.log(`  ${i + 1}. ${s}`));
+  console.log('  Test users, when stories need them (set them up now: nothing is asked once a story is being evaluated):');
+  console.log('     accounts that already exist  npm run heldout -- accounts --add-existing --username qa.user1@example.com --password-env APP_PASSWORD_1');
+  console.log('                                  (password in .env: npm run heldout -- secret APP_PASSWORD_1 --ask; or in Vault: --password-vault secret/qa/app#password)');
+  console.log('     accounts the tests create    saved while hardening the first story that needs them (npm run heldout -- accounts --from-chain …)');
+  console.log('  Restart your agent app (Claude Code, GitHub Copilot…) once so it loads the Playwright MCP server (browser tier 2) and the subagents.');
+}

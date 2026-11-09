@@ -1,0 +1,158 @@
+# Triage: script defect or application defect? (phase 5)
+
+```bash
+npm run heldout -- triage KEY                     # the latest run's triage report and replay chains (its record, 5-run/NN-label.json, already holds each failure's evidence and automatic class)
+npm run heldout -- triage KEY --carry-from auto   # also reuse confirmed decisions for identical failure signatures
+```
+
+Triage keeps its own output apart: the decisions in `6-triage/decisions.json` (the run record stays as the run wrote
+it), and the reports of the probes they cite in `6-triage/`.
+
+The application map (`npm run heldout -- map KEY --domain <domain>`) says how earlier stories reached things. It is never
+evidence: a decision that names a map entry, an overview entry or a rule and no probe is refused, whatever its category.
+The rules (`--rules`) say what earlier stories required and what the application was seen to do; this story's contract
+is still the oracle, and a rule that contradicts it is a question for the verdict, never settled by you. What you add
+follows [hardening.md](hardening.md): mechanics with `--domain … --add`, what the application did with `--rule`, and
+what the overview lacks (an area, a kind of user, a word) with `--about … --add … --evidence Pn`.
+
+## Categories
+
+| Category | Meaning | Effect on the verdict |
+| --- | --- | --- |
+| `APPLICATION_DEFECT` | The AUT does not do what the requirement says (reproduced live) | FAIL (reviewer confirms) |
+| `SCRIPT_DEFECT` | The test is wrong about *mechanics*: locator, wait, endpoint path, auth plumbing, payload shape, JS error, over-strict assertion implementation | repair + re-run |
+| `ENVIRONMENT_ISSUE` | AUT down, network/DNS, browser launch, gateway 502–504, a rate limit, a shared sandbox whose settings someone changed | re-run; INCONCLUSIVE if it persists |
+| `FLAKY` | Failed, then passed on retry, or failed only some of `--repeat-each` repeats | PASS_WITH_WARNINGS |
+| `BLOCKED` | A `[SEED]` precondition could not be established, so the test was not evaluated | INCONCLUSIVE until the seed works |
+| `NEEDS_INVESTIGATION` | Evidence insufficient | INCONCLUSIVE until resolved |
+
+## What the automatic pass looks at
+
+Evidence comes from the failure-time ARIA snapshot, the `[REQ …]` assertion message, and the full
+**API exchange sequence** the test made (redacted).
+
+| Signal | Auto category |
+| --- | --- |
+| `[SEED]` in the failure (seed.create threw) | BLOCKED |
+| Failed then passed on retry / failed only some repeats | FLAKY (ENVIRONMENT if every failed repeat was a network error) |
+| A `concurrency` test whose `[REQ]` check failed on a retried attempt or in some repeats | counted as **failed** (a race shows only sometimes), classified from the failing attempt; reproduce the burst live before confirming (an `api-probe --chain` step with `"parallel": 3` sends the call three times at once) |
+| AUT degraded around the run (pre/post healthcheck slow or failing) and ≥ 2 tests timed out | ENVIRONMENT_ISSUE (run-level correlation) |
+| `net::ERR_…`, ECONNREFUSED, browser launch | ENVIRONMENT_ISSUE |
+| JS error in test code / strict-mode violation | SCRIPT_DEFECT |
+| API call to a method+path **not declared** in `# ENDPOINT:` | SCRIPT_DEFECT (high) |
+| API 502/503/504 | ENVIRONMENT_ISSUE |
+| `[REQ]` failed and the declared endpoint answered 5xx | APPLICATION_DEFECT (high) |
+| `[REQ]` expected 2xx, got 401/403 | NEEDS_INVESTIGATION (check auth plumbing) |
+| `[REQ]` expected 2xx, got 400/422 | APPLICATION_DEFECT (medium): compare the payload with the field rules |
+| `[REQ … strict]` element not found | APPLICATION_DEFECT (medium): the element isn't exposed as required |
+| Element not found, target text **present** in the snapshot (other role/name) | SCRIPT_DEFECT |
+| Element not found, text absent | NEEDS_INVESTIGATION |
+| Text assertion on an element with **empty** text | NEEDS_INVESTIGATION (probably the wrong element) |
+| Regex expectation matches once `\b`/anchors are relaxed | SCRIPT_DEFECT (over-strict implementation → amend) |
+| `[REQ]` failed on a located element / declared endpoint with a different value | APPLICATION_DEFECT (high) |
+
+**A shared public sandbox is not only the application.** Anyone can change its settings: a demo's admin page may switch
+how it stores data, and in one mode an operation answers with its success message but is never recorded. Before
+confirming an `APPLICATION_DEFECT` on a shared demo, and above all when several criteria fail the same way while the
+same operation works through another path (the API call records it, the page doesn't), look at the
+application's own admin, settings or health page for a non-default setting (`heldout inspect --url <that page>`). If
+that explains it, confirm `ENVIRONMENT_ISSUE` with that page as evidence: the verdict is INCONCLUSIVE and says the
+environment caused it. Never change a shared sandbox's settings yourself; that is the owner's call. This check is
+for failures in the web application; a failure of a direct API call, reproduced with `heldout api-probe` beside a
+control call that behaves as required, needs none. Look only where
+the application shows such a page (a link in its navigation or footer, a page the profile's `notes` name): when there
+is none, say so in the rationale and go on; don't hunt for hidden pages or press controls to see what they do.
+
+**Tests tagged `@assumes:G<n>` or `@needs-clarification`** (the expected value is an assumption, or the literal
+reading of an open question, not a settled requirement): triage them like any other test. If the application really
+behaves differently, confirm it as `APPLICATION_DEFECT`; the verdict then lists it under "Readings the application
+contradicts" (a question for the owner), not as a defect, and asks the owner the question.
+
+Before you record it, ask whether the failure depends on the reading at all. Read the gap the tag names in the
+contract, then the failed assertion: would the application's behaviour be right under *any* answer the owner could
+give? When it would not (the page shows nothing where every reading expects a message, a record is lost, the wrong
+user's data is shown), add `--any-reading` to `triage --set` and say why in the rationale: the verdict then reports
+it as a defect. A server error (5xx) is never a reading of a requirement, so the verdict counts it as a defect by
+itself; no flag is needed. When the tests of one root cause differ in this (a negative payment is wrong under every
+reading, a payment of zero depends on the answer), keep the one call and name the tests the flag is for:
+`--set SCN-008,SCN-010,SCN-011 --any-reading SCN-008.4,SCN-010.4,SCN-011`.
+
+**A refusal that answers 200.** The story says a request "is refused" or that someone "must not be able to" and names
+no status; the test expects a 4xx; the application answers 200 with an empty body, and the checks that nothing was
+disclosed or changed pass. Confirm it as `APPLICATION_DEFECT` with severity Minor: the protection holds, the answer
+does not say so (a client can't tell "refused" from "empty"). Say in the rationale that the content checks passed.
+When something *was* disclosed or changed, the severity follows that, not the status.
+
+## Confirming each failure (mandatory)
+
+1. Go through the failures one group at a time: `heldout triage` numbers the groups, and
+   `npm run heldout -- show KEY triage <run> --group <n>` prints one: failing step, expected vs received, API exchanges, and
+   where the screenshot, snapshot and trace are (`npx playwright show-trace <the trace.zip in the test's evidence folder>`).
+   A group is the same criterion and the same call and status, or the same locator. Its first failure is written out
+   in full, the others show what differs from it. Reproduce one failure of each group, and decide yourself whether a
+   group is one root cause: two groups often share one (a page and the call behind it), and one group can hide two.
+   Read what a failure needs and no more: the test with `show KEY spec --test SCN-n`, its criterion with
+   `show KEY contract --ac AC-n`, the field rules, errors, endpoints, variants, gaps and sign-in it touches with
+   `--rules`, `--errors`, `--endpoints`, `--variants`, `--gaps` and `--auth`, earlier probes with `show KEY probes` and
+   `show KEY probes --id P7`. The whole files repeat most of this; the whole report
+   (`.heldout/<profile>/KEY/6-triage/triage-<run>.md`) is for a person.
+2. **Reproduce live**: replay UI steps in your browser tier or with `heldout inspect --steps-json` (or build on an
+   earlier probe: `--from P4`, `api-probe --chain P7 --set …`; [probes.md](probes.md) lists them);
+   replay API requests with `heldout api-probe`. Probe with `--key`: each probe is logged as the story's next one (`P7`), and the decision cites it (`--evidence P7`). Start from
+   `.heldout/<profile>/KEY/6-triage/chains/<run>/all.chain.json` when several failures are API calls: it holds each distinct failing call of the run
+   once, up to 40, and its note says what it left out. A test that submits what a page doesn't offer (a value missing from a list, another user's record) is
+   replayed with the inspector's own steps, never with a script of yours: `force` gives a control the value,
+   `rewrite` changes fields of the page's next request, `request` makes a call in the middle of the walk; the report
+   lists the requests it rewrote. For a leak finding,
+   a chain step checks it without printing the secret: `"show": ["token|jwt"]` decodes a token, and
+   `"notContains": [{"field": "token", "decode": "jwt", "value": "${env:PASSWORD}"}]` reports which part holds it.
+   Write the test's leak assertion the same way, as a list, e.g. `expect(partsContaining).toEqual([])`, so the
+   verdict reads `[] → ["payload"]` rather than `0 → 1`.
+3. Decide:
+
+```
+Did the app reach the state the previous steps should have produced?
+├─ No → did an earlier step's action silently fail (wrong element / endpoint / credentials plumbing)?
+│       ├─ Yes → SCRIPT_DEFECT
+│       └─ No, the app itself went elsewhere / errored → APPLICATION_DEFECT (at the earlier step)
+└─ Yes → is the element / endpoint the step needs present and declared?
+        ├─ Present but the locator didn't match, or the test called an undeclared endpoint → SCRIPT_DEFECT
+        ├─ Absent although the requirement names it (or not exposed with the required name) → APPLICATION_DEFECT
+        └─ Present → does its observed value/behaviour equal the requirement's (verbatim)?
+                ├─ Equal (the assertion compared wrongly) → SCRIPT_DEFECT (fix + audited amendment)
+                └─ Different → APPLICATION_DEFECT
+```
+
+The **requirement is the oracle**. If it is genuinely ambiguous and the app fits one reasonable
+reading, use NEEDS_INVESTIGATION with a clarification note.
+
+4. Record the decision. Findings that share a root cause get the **same `--title`**, and the
+   verdict groups them into one finding:
+
+```bash
+npm run heldout -- triage KEY --set SCN-009 --category APPLICATION_DEFECT --severity Critical \
+  --title "Messages API exposes enquiries without authentication" \
+  --rationale "<evidence-based reasoning>" --evidence "Replayed live on <date> (tier 3, api-probe): …"
+npm run heldout -- triage KEY --set SCN-011 --category SCRIPT_DEFECT \
+  --rationale "Test called GET /api/messages (undeclared); declared GET /api/message answers 200." \
+  --action "Restored the declared endpoint; probed → 200; integrity re-checked."
+```
+
+Suggested severity (the reviewer has the final say): **Critical** means security or privacy, money
+wrong, or the core journey blocked. **Major** means the requirement is not met and there is a
+workaround or limited scope. **Minor** means wording, contract nuance or cosmetics.
+
+## Repair loop
+
+1. Fix every confirmed SCRIPT_DEFECT (mechanics only; the `heldout-hardener` subagent repairs what the
+   `heldout-triager` confirmed). Re-probe; when the triager's reports in `6-triage/` already show the new locator
+   with one match and the control working through it, cite them, and make no second walk that leaves more records.
+   Check the repair with a run of the repaired tests only (`heldout run KEY --label repair --grep "SCN-010|SCN-014"`):
+   such a run is never the evaluation, whatever comes of it. A shared journey that was repaired needs nothing done in
+   the registry: it reads "changed since proven" until the harvest of a passing story proves the new code; only a
+   journey that was replaced by another is marked stale.
+2. `heldout integrity KEY` must stay PRESERVED or AMENDED.
+3. Re-run the **full** suite (`heldout run KEY --label rerun`), then `heldout triage KEY --carry-from auto`.
+   Decisions carry over only for identical signatures (assertion, expected, received, locator, API
+   method+status). Anything new must be investigated.
+4. Stop after 3 cycles in a row. Anything left unexplained stays NEEDS_INVESTIGATION.

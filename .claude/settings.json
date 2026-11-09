@@ -1,0 +1,16 @@
+{
+  "fallbackModel": [
+    "opus",
+    "sonnet"
+  ],
+  "permissions": {
+    "allow": [
+      "Bash(npm run heldout:*)",
+      "mcp__playwright",
+      "Edit(/output/**)",
+      "Edit(/.heldout/**)",
+      "Edit(/journeys/**)",
+      "Edit(/journeys-*/**)"
+    ]
+  }
+}

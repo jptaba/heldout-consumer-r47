@@ -1,0 +1,1 @@
+{"id":"M2c30e7","at":"2026-11-09T03:20:16.169Z","domain":"brands","text":"GET /brands, GET /brands/{id} and GET /brands/search?q= answer without a sign-in; the lists are bare JSON arrays of {id, name, slug}; a brand id is a 26-character ULID string","story":"TOOL-5","probes":["P4"]}

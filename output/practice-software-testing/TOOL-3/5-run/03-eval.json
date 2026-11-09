@@ -1,0 +1,1152 @@
+{
+ "key": "TOOL-3",
+ "run": "03-eval",
+ "generatedAt": "2026-11-09T12:09:20.285Z",
+ "summary": {
+  "total": 22,
+  "passed": 18,
+  "failed": 4,
+  "flaky": 0,
+  "skipped": 0
+ },
+ "entries": [
+  {
+   "scenario": "SCN-001",
+   "title": "SCN-001: A guest creates a cart and gets its id, and the cart is empty",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-1",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-1"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-002",
+   "title": "SCN-002: A guest adds a product to a cart",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-2",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-2"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-003.1",
+   "title": "SCN-003.1: A quantity of 0 is rejected with 422",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-3",
+    "@type:boundary",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-3"
+   ],
+   "testType": "boundary",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-003.2",
+   "title": "SCN-003.2: A quantity of 100 is rejected with 422",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-3",
+    "@type:boundary",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-3"
+   ],
+   "testType": "boundary",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-004",
+   "title": "SCN-004: A guest adds a product on its page and is told it was added",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-4",
+    "@type:functional",
+    "@layer:ui",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-4"
+   ],
+   "testType": "functional",
+   "layer": "ui",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-005",
+   "title": "SCN-005: The cart page lists each product with its quantity and unit price, and a cart total",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-5",
+    "@type:functional",
+    "@layer:ui",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-5"
+   ],
+   "testType": "functional",
+   "layer": "ui",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-006",
+   "title": "SCN-006: A guest removes a product from a cart",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-6",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-6"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-007",
+   "title": "SCN-007: A guest deletes a cart",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-7",
+    "@type:functional",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-7"
+   ],
+   "testType": "functional",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-008.1",
+   "title": "SCN-008.1: adding a product to a cart that does not exist (deleted) answers 404 \"Cart not found\"",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-8",
+    "@type:negative",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-8"
+   ],
+   "testType": "negative",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-008.2",
+   "title": "SCN-008.2: removing a product from a cart that does not exist (deleted) answers 404 \"Cart not found\"",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "failed",
+   "tags": [
+    "@AC-8",
+    "@type:negative",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-8"
+   ],
+   "testType": "negative",
+   "layer": "api",
+   "evidence": {
+    "attempts": 2,
+    "trace": ".heldout/practice-software-testing/TOOL-3/5-run/03-eval/artifacts/practice-software-testing--a63d2-answers-404-Cart-not-found--chromium-retry1/trace.zip",
+    "errorContext": ".heldout/practice-software-testing/TOOL-3/5-run/03-eval/artifacts/practice-software-testing--a63d2-answers-404-Cart-not-found--chromium-retry1/error-context.md",
+    "seed": {
+     "tag": "hldout7xda540",
+     "records": [
+      {
+       "label": "a cart that was deleted (POST /carts, then delete it)",
+       "kind": "data",
+       "cleanup": "none",
+       "created": "01m703cv57dfq3dp904rzcr2bz"
+      },
+      {
+       "label": "look up products in stock (GET /products)",
+       "kind": "auth",
+       "cleanup": "none",
+       "created": [
+        {
+         "id": "01M6J4V5A5A5NAWMENSCT6KC99",
+         "name": "Combination Pliers"
+        },
+        {
+         "id": "01M6J4V5A782QF4P3H8PNR1046",
+         "name": "Pliers"
+        },
+        {
+         "id": "01M6J4V5A8ZMXZ78DQTBZ6XY23",
+         "name": "Bolt Cutters"
+        },
+        {
+         "id": "01M6J4V5AA7FM8VDTFX1WVYXZ5",
+         "name": "Slip Joint Pliers"
+        },
+        {
+         "id": "01M6J4V5ABX30TF5C93BX4J9P5",
+         "name": "Claw Hammer with Shock Reduction Grip"
+        },
+        {
+         "id": "01M6J4V5ADM7P32W370KY6172N",
+         "name": "Hammer"
+        },
+        {
+         "id": "01M6J4V5AE0T1FG4G7MN74GRRK",
+         "name": "Claw Hammer"
+        },
+        {
+         "id": "01M6J4V5AF3K0P4BCN9RYNWWD1",
+         "name": "Thor Hammer"
+        }
+       ]
+      }
+     ]
+    },
+    "apiCalls": 1,
+    "apiSequence": [
+     {
+      "request": {
+       "method": "DELETE",
+       "url": "http://localhost:8091/carts/01m703cv57dfq3dp904rzcr2bz/product/01M6J4V5A5A5NAWMENSCT6KC99",
+       "headers": {
+        "Accept": "application/json"
+       }
+      },
+      "response": {
+       "status": 404,
+       "durationMs": 15,
+       "headers": {
+        "server": "nginx",
+        "content-type": "application/json",
+        "transfer-encoding": "chunked",
+        "connection": "keep-alive",
+        "cache-control": "no-cache, private",
+        "date": "Mon, 09 Nov 2026 12:09:14 GMT",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Content-Disposition"
+       },
+       "body": {
+        "message": "Cart doesnt exists"
+       }
+      }
+     }
+    ],
+    "apiRelevantIndex": 0,
+    "preSequence": [
+     {
+      "request": {
+       "method": "POST",
+       "url": "http://localhost:8091/carts",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 201,
+       "durationMs": 51,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": {
+        "id": "01m703cv57dfq3dp904rzcr2bz"
+       }
+      }
+     },
+     {
+      "request": {
+       "method": "DELETE",
+       "url": "http://localhost:8091/carts/01m703cv57dfq3dp904rzcr2bz",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 204,
+       "durationMs": 27,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": ""
+      }
+     },
+     {
+      "request": {
+       "method": "GET",
+       "url": "http://localhost:8091/products",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 200,
+       "durationMs": 21,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": "{\"current_page\":1,\"data\":[{\"id\":\"01M6J4V5A5A5NAWMENSCT6KC99\",\"name\":\"Combination Pliers\",\"description\":\"Versatile combination pliers designed for gripping, bending, and cutting wire with ease. Featuring chrome vanadium steel construction with induction-hardened cutting edges, these pliers deliver excellent grip and leverage for a wide range of tasks. The precision-machined jaws combine flat grippi… [12294 more characters, cut in the run record]"
+      }
+     }
+    ]
+   },
+   "otherFailures": [],
+   "error": {
+    "headline": "[REQ AC-8] a request for a cart that does not exist says \"Cart not found\"",
+    "reqTag": "AC-8",
+    "matcher": "toBe",
+    "expected": "\"Cart not found\"",
+    "received": "\"Cart doesnt exists\"",
+    "message": "Error: [REQ AC-8] a request for a cart that does not exist says \"Cart not found\"\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: \"Cart not found\"\nReceived: \"Cart doesnt exists\"\n\n  184 |       await journey.step('Then the answer is 404 with the message \"Cart not found\"', async () => {\n  185 |         expectResponse(res, { status: REQ.STATUS.NOT_FOUND }, '[REQ AC-8] a request for a cart that does not exist');\n> 186 |         expect.soft(errorMessageOf(res.body), '[REQ AC-8] a request for a cart that does not exist says \"Cart not found\"').toBe(REQ.CART_NOT_FOUND);\n      |                                                                                                                            ^\n  187 |       });\n  188 |     });\n  189 |   });\n    at body (./output\\practice-software-testing\\TOOL-3\\4-hardening\\tool-3.spec.ts:186:124)\n    at ./heldout-support\\fixtures.ts:753:34\n    at ./output\\practice-software-testing\\TOOL-3\\4-hardening\\tool-3.spec.ts:184:7"
+   },
+   "failingStep": "Then the answer is 404 with the message \"Cart not found\"",
+   "auto": {
+    "category": "APPLICATION_DEFECT",
+    "confidence": "high",
+    "signals": [
+     "Last API exchange: DELETE /carts/01m703cv57dfq3dp904rzcr2bz/product/01M6J4V5A5A5NAWMENSCT6KC99 → 404",
+     "Requirement assertion [REQ AC-8] failed.",
+     "Expected: \"Cart not found\"",
+     "Received: \"Cart doesnt exists\""
+    ],
+    "next": "Confirm live in the AUT (replay with api-probe.ts, observe the actual value), then record with --set."
+   }
+  },
+  {
+   "scenario": "SCN-008.3",
+   "title": "SCN-008.3: reading a cart that does not exist (deleted) answers 404 \"Cart not found\"",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "failed",
+   "tags": [
+    "@AC-8",
+    "@type:negative",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-8"
+   ],
+   "testType": "negative",
+   "layer": "api",
+   "evidence": {
+    "attempts": 2,
+    "trace": ".heldout/practice-software-testing/TOOL-3/5-run/03-eval/artifacts/practice-software-testing--4ea43-answers-404-Cart-not-found--chromium-retry1/trace.zip",
+    "errorContext": ".heldout/practice-software-testing/TOOL-3/5-run/03-eval/artifacts/practice-software-testing--4ea43-answers-404-Cart-not-found--chromium-retry1/error-context.md",
+    "seed": {
+     "tag": "hldout7xda250",
+     "records": [
+      {
+       "label": "a cart that was deleted (POST /carts, then delete it)",
+       "kind": "data",
+       "cleanup": "none",
+       "created": "01m703cv560vbkhyema8yra155"
+      },
+      {
+       "label": "look up products in stock (GET /products)",
+       "kind": "auth",
+       "cleanup": "none",
+       "created": [
+        {
+         "id": "01M6J4V5A5A5NAWMENSCT6KC99",
+         "name": "Combination Pliers"
+        },
+        {
+         "id": "01M6J4V5A782QF4P3H8PNR1046",
+         "name": "Pliers"
+        },
+        {
+         "id": "01M6J4V5A8ZMXZ78DQTBZ6XY23",
+         "name": "Bolt Cutters"
+        },
+        {
+         "id": "01M6J4V5AA7FM8VDTFX1WVYXZ5",
+         "name": "Slip Joint Pliers"
+        },
+        {
+         "id": "01M6J4V5ABX30TF5C93BX4J9P5",
+         "name": "Claw Hammer with Shock Reduction Grip"
+        },
+        {
+         "id": "01M6J4V5ADM7P32W370KY6172N",
+         "name": "Hammer"
+        },
+        {
+         "id": "01M6J4V5AE0T1FG4G7MN74GRRK",
+         "name": "Claw Hammer"
+        },
+        {
+         "id": "01M6J4V5AF3K0P4BCN9RYNWWD1",
+         "name": "Thor Hammer"
+        }
+       ]
+      }
+     ]
+    },
+    "apiCalls": 1,
+    "apiSequence": [
+     {
+      "request": {
+       "method": "GET",
+       "url": "http://localhost:8091/carts/01m703cv560vbkhyema8yra155",
+       "headers": {
+        "Accept": "application/json"
+       }
+      },
+      "response": {
+       "status": 404,
+       "durationMs": 15,
+       "headers": {
+        "server": "nginx",
+        "content-type": "application/json",
+        "transfer-encoding": "chunked",
+        "connection": "keep-alive",
+        "cache-control": "no-cache, private",
+        "date": "Mon, 09 Nov 2026 12:09:14 GMT",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Content-Disposition"
+       },
+       "body": {
+        "message": "Requested item not found"
+       }
+      }
+     }
+    ],
+    "apiRelevantIndex": 0,
+    "preSequence": [
+     {
+      "request": {
+       "method": "POST",
+       "url": "http://localhost:8091/carts",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 201,
+       "durationMs": 53,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": {
+        "id": "01m703cv560vbkhyema8yra155"
+       }
+      }
+     },
+     {
+      "request": {
+       "method": "DELETE",
+       "url": "http://localhost:8091/carts/01m703cv560vbkhyema8yra155",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 204,
+       "durationMs": 29,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": ""
+      }
+     },
+     {
+      "request": {
+       "method": "GET",
+       "url": "http://localhost:8091/products",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 200,
+       "durationMs": 21,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": "{\"current_page\":1,\"data\":[{\"id\":\"01M6J4V5A5A5NAWMENSCT6KC99\",\"name\":\"Combination Pliers\",\"description\":\"Versatile combination pliers designed for gripping, bending, and cutting wire with ease. Featuring chrome vanadium steel construction with induction-hardened cutting edges, these pliers deliver excellent grip and leverage for a wide range of tasks. The precision-machined jaws combine flat grippi… [12294 more characters, cut in the run record]"
+      }
+     }
+    ]
+   },
+   "otherFailures": [],
+   "error": {
+    "headline": "[REQ AC-8] a request for a cart that does not exist says \"Cart not found\"",
+    "reqTag": "AC-8",
+    "matcher": "toBe",
+    "expected": "\"Cart not found\"",
+    "received": "\"Requested item not found\"",
+    "message": "Error: [REQ AC-8] a request for a cart that does not exist says \"Cart not found\"\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: \"Cart not found\"\nReceived: \"Requested item not found\"\n\n  184 |       await journey.step('Then the answer is 404 with the message \"Cart not found\"', async () => {\n  185 |         expectResponse(res, { status: REQ.STATUS.NOT_FOUND }, '[REQ AC-8] a request for a cart that does not exist');\n> 186 |         expect.soft(errorMessageOf(res.body), '[REQ AC-8] a request for a cart that does not exist says \"Cart not found\"').toBe(REQ.CART_NOT_FOUND);\n      |                                                                                                                            ^\n  187 |       });\n  188 |     });\n  189 |   });\n    at body (./output\\practice-software-testing\\TOOL-3\\4-hardening\\tool-3.spec.ts:186:124)\n    at ./heldout-support\\fixtures.ts:753:34\n    at ./output\\practice-software-testing\\TOOL-3\\4-hardening\\tool-3.spec.ts:184:7"
+   },
+   "failingStep": "Then the answer is 404 with the message \"Cart not found\"",
+   "auto": {
+    "category": "APPLICATION_DEFECT",
+    "confidence": "high",
+    "signals": [
+     "Last API exchange: GET /carts/01m703cv560vbkhyema8yra155 → 404",
+     "Requirement assertion [REQ AC-8] failed.",
+     "Expected: \"Cart not found\"",
+     "Received: \"Requested item not found\""
+    ],
+    "next": "Confirm live in the AUT (replay with api-probe.ts, observe the actual value), then record with --set."
+   }
+  },
+  {
+   "scenario": "SCN-008.4",
+   "title": "SCN-008.4: deleting a cart that does not exist (never created) answers 404 \"Cart not found\"",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "failed",
+   "tags": [
+    "@AC-8",
+    "@type:negative",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-8"
+   ],
+   "testType": "negative",
+   "layer": "api",
+   "evidence": {
+    "attempts": 2,
+    "trace": ".heldout/practice-software-testing/TOOL-3/5-run/03-eval/artifacts/practice-software-testing--40bc1-answers-404-Cart-not-found--chromium-retry1/trace.zip",
+    "errorContext": ".heldout/practice-software-testing/TOOL-3/5-run/03-eval/artifacts/practice-software-testing--40bc1-answers-404-Cart-not-found--chromium-retry1/error-context.md",
+    "seed": {
+     "tag": "hldout7xe9o60",
+     "records": [
+      {
+       "label": "a cart (POST /carts)",
+       "kind": "data",
+       "cleanup": "done",
+       "created": "01m703cwd3gcpxfe2hjb7atehg"
+      },
+      {
+       "label": "make up a cart id no cart has",
+       "kind": "pre-step",
+       "cleanup": "none",
+       "created": "99z999zzz9zzzzzz9zzz9zzzzz"
+      },
+      {
+       "label": "look up products in stock (GET /products)",
+       "kind": "auth",
+       "cleanup": "none",
+       "created": [
+        {
+         "id": "01M6J4V5A5A5NAWMENSCT6KC99",
+         "name": "Combination Pliers"
+        },
+        {
+         "id": "01M6J4V5A782QF4P3H8PNR1046",
+         "name": "Pliers"
+        },
+        {
+         "id": "01M6J4V5A8ZMXZ78DQTBZ6XY23",
+         "name": "Bolt Cutters"
+        },
+        {
+         "id": "01M6J4V5AA7FM8VDTFX1WVYXZ5",
+         "name": "Slip Joint Pliers"
+        },
+        {
+         "id": "01M6J4V5ABX30TF5C93BX4J9P5",
+         "name": "Claw Hammer with Shock Reduction Grip"
+        },
+        {
+         "id": "01M6J4V5ADM7P32W370KY6172N",
+         "name": "Hammer"
+        },
+        {
+         "id": "01M6J4V5AE0T1FG4G7MN74GRRK",
+         "name": "Claw Hammer"
+        },
+        {
+         "id": "01M6J4V5AF3K0P4BCN9RYNWWD1",
+         "name": "Thor Hammer"
+        }
+       ]
+      }
+     ]
+    },
+    "apiCalls": 1,
+    "apiSequence": [
+     {
+      "request": {
+       "method": "DELETE",
+       "url": "http://localhost:8091/carts/99z999zzz9zzzzzz9zzz9zzzzz",
+       "headers": {
+        "Accept": "application/json"
+       }
+      },
+      "response": {
+       "status": 404,
+       "durationMs": 28,
+       "headers": {
+        "server": "nginx",
+        "content-type": "application/json",
+        "transfer-encoding": "chunked",
+        "connection": "keep-alive",
+        "cache-control": "no-cache, private",
+        "date": "Mon, 09 Nov 2026 12:09:16 GMT",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Content-Disposition"
+       },
+       "body": {
+        "message": "Cart doesnt exists"
+       }
+      }
+     }
+    ],
+    "apiRelevantIndex": 0,
+    "preSequence": [
+     {
+      "request": {
+       "method": "POST",
+       "url": "http://localhost:8091/carts",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 201,
+       "durationMs": 46,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": {
+        "id": "01m703cwd3gcpxfe2hjb7atehg"
+       }
+      }
+     },
+     {
+      "request": {
+       "method": "GET",
+       "url": "http://localhost:8091/carts/99z999zzz9zzzzzz9zzz9zzzzz",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 404,
+       "durationMs": 21,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": {
+        "message": "Requested item not found"
+       }
+      }
+     },
+     {
+      "request": {
+       "method": "GET",
+       "url": "http://localhost:8091/products",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 200,
+       "durationMs": 19,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": "{\"current_page\":1,\"data\":[{\"id\":\"01M6J4V5A5A5NAWMENSCT6KC99\",\"name\":\"Combination Pliers\",\"description\":\"Versatile combination pliers designed for gripping, bending, and cutting wire with ease. Featuring chrome vanadium steel construction with induction-hardened cutting edges, these pliers deliver excellent grip and leverage for a wide range of tasks. The precision-machined jaws combine flat grippi… [12294 more characters, cut in the run record]"
+      }
+     }
+    ]
+   },
+   "otherFailures": [],
+   "error": {
+    "headline": "[REQ AC-8] a request for a cart that does not exist says \"Cart not found\"",
+    "reqTag": "AC-8",
+    "matcher": "toBe",
+    "expected": "\"Cart not found\"",
+    "received": "\"Cart doesnt exists\"",
+    "message": "Error: [REQ AC-8] a request for a cart that does not exist says \"Cart not found\"\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: \"Cart not found\"\nReceived: \"Cart doesnt exists\"\n\n  184 |       await journey.step('Then the answer is 404 with the message \"Cart not found\"', async () => {\n  185 |         expectResponse(res, { status: REQ.STATUS.NOT_FOUND }, '[REQ AC-8] a request for a cart that does not exist');\n> 186 |         expect.soft(errorMessageOf(res.body), '[REQ AC-8] a request for a cart that does not exist says \"Cart not found\"').toBe(REQ.CART_NOT_FOUND);\n      |                                                                                                                            ^\n  187 |       });\n  188 |     });\n  189 |   });\n    at body (./output\\practice-software-testing\\TOOL-3\\4-hardening\\tool-3.spec.ts:186:124)\n    at ./heldout-support\\fixtures.ts:753:34\n    at ./output\\practice-software-testing\\TOOL-3\\4-hardening\\tool-3.spec.ts:184:7"
+   },
+   "failingStep": "Then the answer is 404 with the message \"Cart not found\"",
+   "auto": {
+    "category": "APPLICATION_DEFECT",
+    "confidence": "high",
+    "signals": [
+     "Last API exchange: DELETE /carts/99z999zzz9zzzzzz9zzz9zzzzz → 404",
+     "Requirement assertion [REQ AC-8] failed.",
+     "Expected: \"Cart not found\"",
+     "Received: \"Cart doesnt exists\""
+    ],
+    "next": "Confirm live in the AUT (replay with api-probe.ts, observe the actual value), then record with --set."
+   }
+  },
+  {
+   "scenario": "SCN-009.1",
+   "title": "SCN-009.1: A quantity of 1 is accepted",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-2",
+    "@type:boundary",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-2"
+   ],
+   "testType": "boundary",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-009.2",
+   "title": "SCN-009.2: A quantity of 99 is accepted",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-2",
+    "@type:boundary",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-2"
+   ],
+   "testType": "boundary",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-010",
+   "title": "SCN-010: Adding a product already in the cart again increases its quantity by the amount added",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-2",
+    "@type:idempotency",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-2"
+   ],
+   "testType": "idempotency",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-011",
+   "title": "SCN-011: A rejected quantity comes with an error for the quantity field",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-3",
+    "@type:negative",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-3"
+   ],
+   "testType": "negative",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-012",
+   "title": "SCN-012: A rejected quantity leaves the cart unchanged",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-3",
+    "@type:negative",
+    "@layer:api",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-3"
+   ],
+   "testType": "negative",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-013",
+   "title": "SCN-013: The cart icon shows the total number of items in the cart",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-4",
+    "@type:functional",
+    "@layer:ui",
+    "@P1",
+    "@assumes:G7"
+   ],
+   "requirementRefs": [
+    "AC-4"
+   ],
+   "testType": "functional",
+   "layer": "ui",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-014",
+   "title": "SCN-014: Each line total on the cart page is price × quantity",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-5",
+    "@type:functional",
+    "@layer:ui",
+    "@P1"
+   ],
+   "requirementRefs": [
+    "AC-5"
+   ],
+   "testType": "functional",
+   "layer": "ui",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-015",
+   "title": "SCN-015: The cart total on the cart page is the sum of the line totals",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-5",
+    "@type:functional",
+    "@layer:ui",
+    "@P1",
+    "@assumes:G8"
+   ],
+   "requirementRefs": [
+    "AC-5"
+   ],
+   "testType": "functional",
+   "layer": "ui",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  },
+  {
+   "scenario": "SCN-016",
+   "title": "SCN-016: Deleting a cart that was already deleted also answers 204",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "failed",
+   "tags": [
+    "@AC-7",
+    "@type:idempotency",
+    "@layer:api",
+    "@P1",
+    "@assumes:G6"
+   ],
+   "requirementRefs": [
+    "AC-7"
+   ],
+   "testType": "idempotency",
+   "layer": "api",
+   "evidence": {
+    "attempts": 2,
+    "trace": ".heldout/practice-software-testing/TOOL-3/5-run/03-eval/artifacts/practice-software-testing--8647b-dy-deleted-also-answers-204-chromium-retry1/trace.zip",
+    "errorContext": ".heldout/practice-software-testing/TOOL-3/5-run/03-eval/artifacts/practice-software-testing--8647b-dy-deleted-also-answers-204-chromium-retry1/error-context.md",
+    "seed": {
+     "tag": "hldout7xh3y100",
+     "records": [
+      {
+       "label": "a cart (POST /carts)",
+       "kind": "data",
+       "cleanup": "done",
+       "created": "01m703czzsnxyghpz0c620zr2w"
+      }
+     ]
+    },
+    "apiCalls": 2,
+    "apiSequence": [
+     {
+      "request": {
+       "method": "DELETE",
+       "url": "http://localhost:8091/carts/01m703czzsnxyghpz0c620zr2w",
+       "headers": {
+        "Accept": "application/json"
+       }
+      },
+      "response": {
+       "status": 204,
+       "durationMs": 23,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": ""
+      }
+     },
+     {
+      "request": {
+       "method": "DELETE",
+       "url": "http://localhost:8091/carts/01m703czzsnxyghpz0c620zr2w",
+       "headers": {
+        "Accept": "application/json"
+       }
+      },
+      "response": {
+       "status": 404,
+       "durationMs": 12,
+       "headers": {
+        "server": "nginx",
+        "content-type": "application/json",
+        "transfer-encoding": "chunked",
+        "connection": "keep-alive",
+        "cache-control": "no-cache, private",
+        "date": "Mon, 09 Nov 2026 12:09:19 GMT",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Content-Disposition"
+       },
+       "body": {
+        "message": "Cart doesnt exists"
+       }
+      }
+     }
+    ],
+    "apiRelevantIndex": 1,
+    "preSequence": [
+     {
+      "request": {
+       "method": "POST",
+       "url": "http://localhost:8091/carts",
+       "headers": {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+       }
+      },
+      "response": {
+       "status": 201,
+       "durationMs": 31,
+       "headers": {
+        "content-type": "application/json"
+       },
+       "body": {
+        "id": "01m703czzsnxyghpz0c620zr2w"
+       }
+      }
+     }
+    ]
+   },
+   "otherFailures": [],
+   "error": {
+    "headline": "[REQ AC-7] deleting a cart that was already deleted (expects status 204)",
+    "reqTag": "AC-7",
+    "matcher": "toBe",
+    "expected": "204",
+    "received": "404",
+    "message": "Error: [REQ AC-7] deleting a cart that was already deleted (expects status 204)\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: 204\nReceived: 404\n\n   at ..\\heldout-support\\fixtures.ts:384\n\n  382 | export function expectResponse(res: ApiResponse, expected: { status: number | '2xx' | '3xx' | '4xx' | '5xx'; body?: unknown }, message: string): void {\n  383 |   if (typeof expected.status === 'string') expect.soft(`${Math.floor(res.status / 100)}xx`, `${message} (expects a ${expected.status} status, got ${res.status})`).toBe(expected.status);\n> 384 |   else expect.soft(res.status, `${message} (expects status ${expected.status})`).toBe(expected.status);\n      |                                                                                  ^\n  385 |   if ('body' in expected) expect.soft(res.body, `${message} (expects the body)`).toEqual(expected.body);\n  386 | }\n  387 |\n    at expectResponse (./heldout-support\\fixtures.ts:384:82)\n    at body (./output\\practice-software-testing\\TOOL-3\\4-hardening\\tool-3.spec.ts:314:21)\n    at ./heldout-support\\fixtures.ts:753:34\n    at ./output\\practice-software-testing\\TOOL-3\\4-hardening\\tool-3.spec.ts:312:5"
+   },
+   "failingStep": "Then the second delete answers 204 too",
+   "auto": {
+    "category": "APPLICATION_DEFECT",
+    "confidence": "high",
+    "signals": [
+     "Last API exchange: DELETE /carts/01m703czzsnxyghpz0c620zr2w → 404",
+     "Requirement assertion [REQ AC-7] failed.",
+     "Expected: 204",
+     "Received: 404",
+     "SCN-016 rests on an unsettled reading (assumed G6). Confirm what the application does as usual; the verdict then lists it as a question for the owner, not as a defect."
+    ],
+    "next": "Confirm live in the AUT (replay with api-probe.ts, observe the actual value), then record with --set."
+   }
+  },
+  {
+   "scenario": "SCN-017",
+   "title": "SCN-017: A guest's cart from creation to deletion",
+   "file": "practice-software-testing/TOOL-3/4-hardening/tool-3.spec.ts",
+   "status": "passed",
+   "tags": [
+    "@AC-1",
+    "@AC-2",
+    "@AC-6",
+    "@AC-7",
+    "@AC-8",
+    "@type:composition",
+    "@layer:api",
+    "@P2"
+   ],
+   "requirementRefs": [
+    "AC-1",
+    "AC-2",
+    "AC-6",
+    "AC-7",
+    "AC-8"
+   ],
+   "testType": "composition",
+   "layer": "api",
+   "evidence": {
+    "attempts": 1
+   },
+   "otherFailures": []
+  }
+ ],
+ "meta": {
+  "label": "eval",
+  "startedAt": "2026-11-09T12:09:10.993Z",
+  "finishedAt": "2026-11-09T12:09:20.212Z",
+  "autId": "practice-software-testing",
+  "aut": {
+   "name": "Practice Software Testing",
+   "baseURL": "http://localhost:4200/",
+   "apiBaseURL": "http://localhost:8091/"
+  },
+  "command": "npx playwright test output/practice-software-testing/TOOL-3/4-hardening/ --workers 4",
+  "workers": 4,
+  "repeatEach": null,
+  "grep": null,
+  "capture": false,
+  "preflight": {
+   "health": [
+    {
+     "url": "http://localhost:4200/",
+     "ok": true,
+     "status": 200,
+     "ms": 39,
+     "samples": [
+      39,
+      5,
+      2
+     ],
+     "slow": false
+    }
+   ]
+  },
+  "postflight": {
+   "health": [
+    {
+     "url": "http://localhost:4200/",
+     "ok": true,
+     "status": 200,
+     "ms": 6,
+     "samples": [
+      6,
+      6,
+      1
+     ],
+     "slow": false
+    }
+   ]
+  },
+  "skill": "c98b880ec3c74fff",
+  "exitCode": 1,
+  "stats": {
+   "startTime": "2026-11-09T12:09:11.495Z",
+   "duration": 8648.671,
+   "expected": 18,
+   "skipped": 0,
+   "unexpected": 4,
+   "flaky": 0
+  },
+  "raw": ".heldout/practice-software-testing/TOOL-3/5-run/03-eval"
+ },
+ "seed": {
+  "created": 26,
+  "cleaned": 21,
+  "alreadyGone": 0,
+  "kept": 5,
+  "keptBy": {
+   "a cart that was deleted (POST /carts, then delete it)": 5
+  },
+  "leftovers": [],
+  "accounts": {
+   "used": 0,
+   "reset": 0,
+   "notReset": []
+  }
+ }
+}

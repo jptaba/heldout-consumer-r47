@@ -1,0 +1,12 @@
+
+# held-out evaluator (secrets, scratch and bulky local artifacts; the record stays tracked)
+.env
+node_modules/
+test-results/
+playwright-report/
+.heldout/
+output/*/*/5-run/*/html/
+output/*/*/5-run/*/artifacts/
+*.trace.zip
+.playwright-mcp/
+.claude/settings.local.json

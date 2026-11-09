@@ -1,0 +1,374 @@
+{
+  "key": "TOOL-5",
+  "title": "Shop by brand",
+  "revision": {
+    "story": "97021d5be675c414",
+    "linked": {}
+  },
+  "sourcesRead": [
+    {
+      "file": "story.md",
+      "read": true,
+      "contributes": "the whole requirement: six bullets under \"What we need\" (L20-L25), out-of-scope notes (L27, L29)"
+    }
+  ],
+  "context": "Marketing wants people to be able to shop by brand (story.md#L17). The brand search is for the mobile app (story.md#L24). The story has no acceptance-criteria section: the bullets under \"What we need\" are the criteria.",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "quote": "the shop page has a \"By brand\" filter listing the brands; ticking one shows only that brand's products",
+      "source": "story.md#L20",
+      "text": "The shop page has a \"By brand\" filter listing the brands; ticking one shows only that brand's products.",
+      "layer": "ui",
+      "entryPoint": "the shop page",
+      "outcomes": [
+        "the shop page has a filter \"By brand\" that lists the brands",
+        "after ticking one brand, every product shown is a product of that brand"
+      ],
+      "gaps": [
+        "G1",
+        "G4"
+      ]
+    },
+    {
+      "id": "AC-2",
+      "quote": "the catalogue API supports the same: GET /products?by_brand=<brand id> → only products of that brand",
+      "source": "story.md#L21",
+      "text": "The catalogue API supports the same: GET /products?by_brand=<brand id> returns only products of that brand.",
+      "layer": "api",
+      "endpoints": [
+        "GET /products",
+        "GET /brands"
+      ],
+      "outcomes": [
+        "GET /products?by_brand=<brand id> answers only products of that brand"
+      ],
+      "gaps": [
+        "G2",
+        "G3",
+        "G5",
+        "G7"
+      ]
+    },
+    {
+      "id": "AC-3",
+      "quote": "GET /brands → all brands, each with its id, name and slug",
+      "source": "story.md#L22",
+      "text": "GET /brands returns all brands, each with its id, name and slug.",
+      "layer": "api",
+      "endpoints": [
+        "GET /brands"
+      ],
+      "outcomes": [
+        "GET /brands answers all brands",
+        "each brand in the answer has its id, name and slug"
+      ],
+      "gaps": [
+        "G3",
+        "G4",
+        "G7"
+      ]
+    },
+    {
+      "id": "AC-4",
+      "quote": "GET /brands/{id} → that brand. Unknown id → 404",
+      "source": "story.md#L23",
+      "text": "GET /brands/{id} returns that brand. An unknown id returns 404.",
+      "layer": "api",
+      "endpoints": [
+        "GET /brands/{id}",
+        "GET /brands"
+      ],
+      "outcomes": [
+        "GET /brands/{id} with the id of an existing brand answers that brand",
+        "GET /brands/{id} with an unknown id → 404"
+      ],
+      "gaps": [
+        "G3",
+        "G6",
+        "G7"
+      ]
+    },
+    {
+      "id": "AC-5",
+      "quote": "brand search for the mobile app: GET /brands/search?q=<text> finds brands whose name contains the text anywhere in the name, ignoring case (e.g. \"craft\" finds MightyCraft Hardware, \"FORGE\" finds ForgeFlex Tools)",
+      "source": "story.md#L24",
+      "text": "Brand search for the mobile app: GET /brands/search?q=<text> finds brands whose name contains the text anywhere in the name, ignoring case (e.g. \"craft\" finds MightyCraft Hardware, \"FORGE\" finds ForgeFlex Tools).",
+      "layer": "api",
+      "endpoints": [
+        "GET /brands/search"
+      ],
+      "outcomes": [
+        "GET /brands/search?q=<text> finds the brands whose name contains the text anywhere in the name, ignoring case",
+        "q \"craft\" finds MightyCraft Hardware",
+        "q \"FORGE\" finds ForgeFlex Tools"
+      ],
+      "gaps": [
+        "G7"
+      ]
+    },
+    {
+      "id": "AC-6",
+      "quote": "no match → empty list, still 200",
+      "source": "story.md#L25",
+      "text": "A brand search with no match returns an empty list, still with 200.",
+      "layer": "api",
+      "endpoints": [
+        "GET /brands/search"
+      ],
+      "outcomes": [
+        "a search text no brand name contains → empty list",
+        "the status is still 200"
+      ],
+      "gaps": [
+        "G5",
+        "G7"
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/products",
+      "source": "story.md#L21",
+      "request": "?by_brand=<brand id>",
+      "success": "only products of that brand"
+    },
+    {
+      "method": "GET",
+      "path": "/brands",
+      "source": "story.md#L22",
+      "success": "all brands, each with its id, name and slug"
+    },
+    {
+      "method": "GET",
+      "path": "/brands/{id}",
+      "source": "story.md#L23",
+      "success": "that brand"
+    },
+    {
+      "method": "GET",
+      "path": "/brands/search",
+      "source": "story.md#L24",
+      "request": "?q=<text>",
+      "success": "the brands whose name contains the text, ignoring case; no match: empty list, still 200 (L25)"
+    }
+  ],
+  "rules": [],
+  "errorModel": [
+    {
+      "id": "E1",
+      "case": "GET /brands/{id} with an unknown id",
+      "status": 404,
+      "source": "story.md#L23"
+    }
+  ],
+  "testData": {
+    "strategy": "not stated in the sources: the criteria only read the existing catalogue (brands and products)",
+    "constraints": [
+      "the brands MightyCraft Hardware and ForgeFlex Tools exist in the catalogue (story.md#L24)",
+      "brand create/edit for admins is TOOL-12 and is not tested here (story.md#L29)"
+    ],
+    "source": "story.md#L24, story.md#L29"
+  },
+  "outOfScope": [
+    "nice to have (not this sprint): brand logos, brand landing pages",
+    "FYI brand create/edit for admins is TOOL-12, don't test that here."
+  ],
+  "gaps": [
+    {
+      "id": "G1",
+      "element": "the shop page's route, how the \"By brand\" filter and its brand entries are found and ticked, and how a shown product's brand is told",
+      "kind": "mechanics",
+      "required": true,
+      "affects": [
+        "AC-1"
+      ],
+      "tried": [
+        {
+          "where": "story",
+          "result": "L20 names the shop page and the \"By brand\" filter, but no route, locator or how a product's brand shows"
+        },
+        {
+          "where": "aut",
+          "result": "The shop page is the home page (/). Its filters column shows a level-4 heading \"By brand:\" (with a trailing colon) followed by a checkbox group \"Brands\" with one checkbox per brand, labelled with the brand's name (getByRole('checkbox', { name, exact: true })). Ticking one reloads the list (a QUERY /products call with by_brand=<brand id>). A product card (a[data-test=product-<id>], href /product/<id>) shows no brand: a shown product's brand is read from GET /products/{id}, field brand.name."
+        }
+      ],
+      "resolution": "discovered-in-aut",
+      "value": "The shop page is the home page (/). Its filters column shows a level-4 heading \"By brand:\" (with a trailing colon) followed by a checkbox group \"Brands\" with one checkbox per brand, labelled with the brand's name (getByRole('checkbox', { name, exact: true })). Ticking one reloads the list (a QUERY /products call with by_brand=<brand id>). A product card (a[data-test=product-<id>], href /product/<id>) shows no brand: a shown product's brand is read from GET /products/{id}, field brand.name.",
+      "evidence": "P6, P8, P9, P10"
+    },
+    {
+      "id": "G2",
+      "element": "where a product's brand is in the GET /products answer (field name, list shape) so that \"only products of that brand\" can be checked",
+      "kind": "mechanics",
+      "required": true,
+      "affects": [
+        "AC-2"
+      ],
+      "tried": [
+        {
+          "where": "story",
+          "result": "L21 gives the method, path and by_brand parameter, not the answer's shape"
+        },
+        {
+          "where": "aut",
+          "result": "GET /products answers a paginated object {current_page, data: [...], from, last_page, per_page, to, total}; each product in data has its brand nested as brand: {id, name}. Further pages with ?page=N."
+        }
+      ],
+      "resolution": "discovered-in-aut",
+      "value": "GET /products answers a paginated object {current_page, data: [...], from, last_page, per_page, to, total}; each product in data has its brand nested as brand: {id, name}. Further pages with ?page=N.",
+      "evidence": "P2, P3"
+    },
+    {
+      "id": "G3",
+      "element": "the success status of GET /products?by_brand=<brand id>, GET /brands and GET /brands/{id}: no source states one (L25's \"still 200\" is said of the brand search)",
+      "kind": "oracle",
+      "required": false,
+      "affects": [
+        "AC-2",
+        "AC-3",
+        "AC-4"
+      ],
+      "tried": [
+        {
+          "where": "story",
+          "result": "L21-L23 state the content of the answers only"
+        }
+      ],
+      "resolution": "open"
+    },
+    {
+      "id": "G4",
+      "element": "which brands \"all brands\" (L22) and \"listing the brands\" (L20) means: no source lists the brands, and none says whether the filter must list the same brands GET /brands answers. Only MightyCraft Hardware and ForgeFlex Tools are named (L24)",
+      "kind": "oracle",
+      "required": false,
+      "affects": [
+        "AC-1",
+        "AC-3"
+      ],
+      "tried": [
+        {
+          "where": "story",
+          "result": "L20 and L22 name no brands and no count; L24 names two brands as search examples"
+        }
+      ],
+      "resolution": "open"
+    },
+    {
+      "id": "G5",
+      "element": "what \"no match\" (L25) applies to: the bullet follows the brand search (L24), so it is read as a brand search no brand name matches. Whether GET /products?by_brand with a brand that has no products, or with an unknown brand id, also answers an empty list with 200 is not stated",
+      "kind": "oracle",
+      "required": false,
+      "affects": [
+        "AC-6",
+        "AC-2"
+      ],
+      "tried": [
+        {
+          "where": "story",
+          "result": "L25 is a separate bullet directly under the brand search bullet (L24) and names no endpoint"
+        }
+      ],
+      "resolution": "assumed",
+      "value": "L25 applies to GET /brands/search: a search text no brand name contains answers an empty list with 200. Nothing is expected of GET /products?by_brand for a brand without products or an unknown brand id"
+    },
+    {
+      "id": "G6",
+      "element": "what a brand id looks like, to send an id no brand has (AC-4's unknown id)",
+      "kind": "mechanics",
+      "required": true,
+      "affects": [
+        "AC-4"
+      ],
+      "tried": [
+        {
+          "where": "story",
+          "result": "L22-L23 say brands have an id, not its form"
+        },
+        {
+          "where": "aut",
+          "result": "A brand id is a 26-character ULID string; an id of the same length, all zeros but a final 1, belongs to no brand."
+        }
+      ],
+      "resolution": "discovered-in-aut",
+      "value": "A brand id is a 26-character ULID string; an id of the same length, all zeros but a final 1, belongs to no brand.",
+      "evidence": "P1, P5"
+    },
+    {
+      "id": "G7",
+      "element": "whether the brand and product endpoints need a sign-in, and how a call proves it",
+      "kind": "mechanics",
+      "required": false,
+      "affects": [
+        "AC-2",
+        "AC-3",
+        "AC-4",
+        "AC-5",
+        "AC-6"
+      ],
+      "tried": [
+        {
+          "where": "story",
+          "result": "L21-L25 state no protection; the pack's configuration shows no sign-in header"
+        },
+        {
+          "where": "aut",
+          "result": "No sign-in: GET /brands, GET /brands/{id}, GET /brands/search?q= and GET /products?by_brand= answer without any credentials (no Authorization header, no cookie)."
+        }
+      ],
+      "resolution": "discovered-in-aut",
+      "value": "No sign-in: GET /brands, GET /brands/{id}, GET /brands/search?q= and GET /products?by_brand= answer without any credentials (no Authorization header, no cookie).",
+      "evidence": "P1, P3, P4"
+    }
+  ],
+  "coverage": [
+    {
+      "lines": "story.md#L17",
+      "as": "context",
+      "note": "who asks for the feature and an invitation to ask; the open questions go to the verdict"
+    },
+    {
+      "lines": "story.md#L19",
+      "as": "context",
+      "note": "lead-in to the list of criteria"
+    },
+    {
+      "lines": "story.md#L20",
+      "as": "AC-1, G1, G4"
+    },
+    {
+      "lines": "story.md#L21",
+      "as": "AC-2, endpoint, G2"
+    },
+    {
+      "lines": "story.md#L22",
+      "as": "AC-3, endpoint, G4"
+    },
+    {
+      "lines": "story.md#L23",
+      "as": "AC-4, endpoint, E1, G6"
+    },
+    {
+      "lines": "story.md#L24",
+      "as": "AC-5, endpoint, test-data"
+    },
+    {
+      "lines": "story.md#L25",
+      "as": "AC-6, G5"
+    },
+    {
+      "lines": "story.md#L27",
+      "as": "out-of-scope"
+    },
+    {
+      "lines": "story.md#L28",
+      "as": "not-a-requirement",
+      "note": "an external Figma link, not a linked requirement page and marked not final; nothing of it is in the pack"
+    },
+    {
+      "lines": "story.md#L29",
+      "as": "out-of-scope, test-data"
+    }
+  ]
+}
